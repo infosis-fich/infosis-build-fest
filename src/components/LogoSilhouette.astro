@@ -1,0 +1,104 @@
+<canvas class="hero__logo-map" data-logo-canvas aria-hidden="true"></canvas>
+
+<script>
+  const canvas =
+    document.querySelector<HTMLCanvasElement>("[data-logo-canvas]");
+  const image = new Image();
+  image.src = "/ico-infosis-transparent.png";
+
+  if (canvas) {
+    const context = canvas.getContext("2d");
+    const mask = document.createElement("canvas");
+    const maskContext = mask.getContext("2d", { willReadFrequently: true });
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    let frame = 0;
+    let running = false;
+    let start = 0;
+
+    const draw = (time = 0) => {
+      if (!context || !maskContext || !image.complete) return;
+
+      const bounds = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(bounds.width * dpr));
+      const height = Math.max(1, Math.round(bounds.height * dpr));
+
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      const size = Math.min(width, height) * 0.86;
+      const offsetX = (width - size) / 2;
+      const offsetY = (height - size) / 2;
+      const maskSize = 160;
+      mask.width = maskSize;
+      mask.height = maskSize;
+      maskContext.clearRect(0, 0, maskSize, maskSize);
+      maskContext.drawImage(image, 0, 0, maskSize, maskSize);
+      const pixels = maskContext.getImageData(0, 0, maskSize, maskSize).data;
+      const cell = Math.max(2, Math.round(3 * dpr));
+      const t = time / 1000;
+
+      context.clearRect(0, 0, width, height);
+      for (let y = 0; y < maskSize; y += 3) {
+        for (let x = 0; x < maskSize; x += 3) {
+          const index = (y * maskSize + x) * 4 + 3;
+          const alpha = pixels[index] / 255;
+          if (alpha < 0.12) continue;
+
+          const px = offsetX + (x / maskSize) * size;
+          const py = offsetY + (y / maskSize) * size;
+          const wave = reducedMotion
+            ? 1
+            : 0.78 + Math.sin(t * 1.8 + x * 0.18 + y * 0.12) * 0.18;
+          const row = y / maskSize;
+          const color =
+            row < 0.25
+              ? "#c9e9f5"
+              : row < 0.5
+              ? "#8fd0e9"
+                : row < 0.75
+              ? "#4da9d4"
+              : "#075787";
+
+          context.globalAlpha = alpha * wave * 0.92;
+          context.fillStyle = color;
+          context.fillRect(px, py, cell, cell);
+        }
+      }
+      context.globalAlpha = 1;
+    };
+
+    const loop = (time: number) => {
+      if (!running) return;
+      draw(time - start);
+      frame = requestAnimationFrame(loop);
+    };
+
+    const startAnimation = () => {
+      if (running) return;
+      running = true;
+      start = performance.now();
+      if (reducedMotion) draw();
+      else frame = requestAnimationFrame(loop);
+    };
+
+    const stopAnimation = () => {
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+
+    image.addEventListener("load", () => {
+      draw();
+      new IntersectionObserver(
+        ([entry]) =>
+          entry.isIntersecting ? startAnimation() : stopAnimation(),
+        { threshold: 0.05 },
+      ).observe(canvas);
+    });
+    window.addEventListener("resize", () => draw());
+  }
+</script>

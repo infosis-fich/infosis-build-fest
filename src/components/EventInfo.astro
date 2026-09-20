@@ -1,0 +1,23 @@
+---
+import { event } from "../data/event";
+import PixelCard from "./PixelCard.astro";
+---
+
+<section class="section section--first" id="evento" data-reveal>
+  <div class="shell">
+    <div class="section__head">
+      <h2 class="section__title">Qué es Build Fest 2026</h2><p
+        class="section__sub"
+      >
+        Dos días presenciales de desarrollo web, aprendizaje práctico y trabajo
+        en equipo.
+      </p>
+    </div><div class="cards">
+      {
+        event.highlights.map(([, title, description]) => (
+          <PixelCard title={title} description={description} />
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,77 @@
+---
+import { siGithub, siTiktok, siWhatsapp } from "simple-icons";
+---
+
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<header class="site-header">
+  <div class="shell nav-inner">
+    <a class="brand" href="#top" aria-label="Infosis Build Fest, inicio"
+      ><img
+        class="brand-logo"
+        src="/ico-infosis-transparent.png"
+        alt="Logo de Ingeniería Informática y Sistemas"
+        width="34"
+        height="34"
+      /></a
+    >
+    <a class="brand-home" href="#top">Inicio</a>
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="main-navigation"
+    >
+      <span class="sr-only">Abrir menú</span><span aria-hidden="true">☰</span>
+    </button>
+    <nav id="main-navigation" aria-label="Navegación principal">
+      <a href="#evento">Evento</a><a href="#herramientas">Tecnología</a><a href="#agenda">Agenda</a><a
+        href="#inscripcion">Participa</a
+      >
+    </nav>
+    <div class="header-socials" aria-label="Contacto y redes">
+      <a
+        href="https://wa.me/59167786830?text=Hola%20Fernando%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20la%20Infosis%20Build%20Fest%202026"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Más información por WhatsApp"
+        ><svg viewBox="0 0 24 24" aria-hidden="true"
+          ><path d={siWhatsapp.path}></path></svg
+        ></a
+      >
+      <a
+        href="https://github.com/infosis-fich"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="GitHub de Infosis"
+        ><svg viewBox="0 0 24 24" aria-hidden="true"
+          ><path d={siGithub.path}></path></svg
+        ></a
+      >
+      <a
+        href="https://www.tiktok.com/@infosis.uagrm.fich"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="TikTok de Infosis"
+        ><svg viewBox="0 0 24 24" aria-hidden="true"
+          ><path d={siTiktok.path}></path></svg
+        ></a
+      >
+    </div>
+   <a class="header-cta" href="#inscripcion" data-registration-trigger>Inscribirme <span>↗</span></a>
+  </div>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const nav = document.querySelector<HTMLElement>("#main-navigation");
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!open));
+    nav?.classList.toggle("is-open", !open);
+  });
+  nav?.querySelectorAll("a").forEach((link) =>
+    link.addEventListener("click", () => {
+      toggle?.setAttribute("aria-expanded", "false");
+      nav.classList.remove("is-open");
+    }),
+  );
+</script>

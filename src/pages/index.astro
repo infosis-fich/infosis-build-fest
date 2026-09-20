@@ -1,0 +1,23 @@
+---
+import Layout from "../components/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Hero from "../components/Hero.astro";
+import EventInfo from "../components/EventInfo.astro";
+import Tracks from "../components/Tracks.astro";
+import Agenda from "../components/Agenda.astro";
+import FinalCta from "../components/FinalCta.astro";
+import Footer from "../components/Footer.astro";
+import { event } from "../data/event";
+---
+
+<Layout title={event.title} description={event.description}
+  ><Navbar /><main id="contenido">
+    <Hero /><EventInfo /><Tracks /><Agenda /><FinalCta />
+  </main><Footer /></Layout
+>
+<script>
+  import { initScrollAnimations } from "../scripts/scroll-animations";
+  import { initSmoothScroll } from "../scripts/smooth-scroll";
+  initSmoothScroll();
+  initScrollAnimations();
+</script>

@@ -1,0 +1,279 @@
+body {
+  font-family: "JetBrains Mono", monospace;
+}
+.pixel-title {
+  --logo-h: clamp(2rem, 8.5vw, 5rem);
+  display: block;
+  width: 100%;
+  margin: 3rem 0 2.75rem;
+  line-height: 1;
+}
+.pixel-title__svg {
+  display: block;
+  width: auto;
+  height: var(--logo-h);
+  overflow: visible;
+}
+.pixel-title__second-line {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--logo-h) * 0.18);
+  margin-top: clamp(0.4rem, 1.2vw, 0.8rem);
+}
+.pixel-title__fest {
+  display: block;
+  width: auto;
+  height: var(--logo-h);
+  overflow: visible;
+}
+.pixel-title__suffix {
+  display: block;
+  color: var(--text);
+  font-size: calc(var(--logo-h) * 0.55);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.pixel-title rect {
+  transform-box: fill-box;
+}
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  color: var(--violet);
+  font-size: 11px;
+  margin: -10px 0 24px;
+}
+/* Estructura editorial de la landing. */
+.section {
+  border-top: 1px solid var(--line);
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+.section--first {
+  border-top: 0;
+}
+.section__head {
+  max-width: 46ch;
+  margin-bottom: clamp(2.25rem, 5vw, 3.25rem);
+}
+.section__eyebrow {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--violet);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+.section__title {
+  margin: 0;
+  font-size: clamp(1.75rem, 4.2vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+.section--first .section__title {
+  white-space: nowrap;
+}
+.section__title strong,
+.section__title em {
+  font-weight: 400;
+  color: var(--text);
+}
+.section__title em {
+  color: var(--violet);
+  font-style: normal;
+}
+.section__sub {
+  max-width: 52ch;
+  margin: 0.875rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+}
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-hover);
+  padding: 1.5rem;
+}
+.card__pixels {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.card > :not(.card__pixels) {
+  position: relative;
+  z-index: 1;
+}
+.card__title {
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.card__body {
+  max-width: 32ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+.agenda {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  border: 0;
+  overflow: visible;
+}
+.agenda-day {
+  min-height: 0;
+  background: var(--surface-hover);
+}
+.agenda-day header {
+  padding: 0 0 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.agenda-day header span {
+  color: var(--violet);
+  font-size: 0.75rem;
+}
+.agenda-day h3 {
+  margin: 0.75rem 0 0;
+  font-size: 1.0625rem;
+  font-weight: 400;
+}
+.agenda-list > div {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.agenda-list > div:last-child {
+  border-bottom: 0;
+}
+.agenda-list strong {
+  color: var(--violet);
+  font-weight: 500;
+}
+.cta--hero {
+  position: relative;
+  min-height: 25rem;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: center;
+}
+.cta--hero .shell {
+  position: relative;
+  z-index: 2;
+}
+.cta__content {
+  position: relative;
+  z-index: 2;
+  max-width: 42rem;
+  margin-inline: auto;
+}
+.cta__eyebrow {
+  margin: 0 0 1.5rem;
+  color: var(--violet);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+.cta__title {
+  max-width: 20ch;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+.cta__body {
+  max-width: 44ch;
+  margin: 1.25rem auto;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.cta--hero .button {
+  margin-inline: auto;
+}
+.registration-modal {
+  width: min(32rem, calc(100% - 2rem));
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  background: transparent;
+}
+.registration-modal::backdrop {
+  background: #08080bcc;
+  backdrop-filter: blur(6px);
+}
+.registration-modal__card {
+  position: relative;
+  padding: clamp(2rem, 6vw, 3rem);
+  background: var(--surface-hover);
+  box-shadow: 0 1.5rem 4rem #0008;
+}
+.registration-modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line-strong);
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+.registration-modal__close:hover {
+  color: var(--text);
+  border-color: var(--violet);
+}
+.registration-modal__eyebrow {
+  color: var(--violet);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+.registration-modal h2 {
+  margin: 1rem 0 0.75rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 400;
+}
+.registration-modal p {
+  max-width: 42ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.registration-modal__price {
+  display: block;
+  margin: 1.25rem 0 1.75rem;
+  color: var(--blue);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 800px) {
+  .agenda {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 1.25rem;
+  }
+  .card__title {
+    margin-top: 1.25rem;
+  }
+  .agenda-list > div {
+    grid-template-columns: 4.5rem 1fr;
+  }
+}

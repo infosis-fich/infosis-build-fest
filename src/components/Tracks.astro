@@ -1,0 +1,25 @@
+---
+import { event } from "../data/event";
+import PixelCard from "./PixelCard.astro";
+---
+
+<section class="section" id="herramientas" data-reveal>
+  <div class="shell">
+    <div class="section__head">
+      <h2 class="section__title">Cómo construimos</h2>
+      <p class="section__sub">
+        Las ideas, metodologías y herramientas que acompañan los 2 días.
+      </p>
+    </div>
+    <div class="cards">
+      {
+        event.tracks.map(([, title, description]) => {
+          const [name, translation] = title.split(" · ");
+          return (
+            <PixelCard title={name} description={translation || description} />
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

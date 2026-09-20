@@ -1,0 +1,41 @@
+---
+import { event } from "../data/event";
+---
+
+<section class="section" id="agenda" data-reveal>
+  <div class="shell">
+    <div class="section__head">
+      <h2 class="section__title">Agenda del evento</h2><p class="section__sub">
+        Dos días para aprender, construir y resolver un reto en equipo.
+      </p>
+    </div><div class="agenda">
+      {
+        event.agenda.map((day) => (
+          <article class="card agenda-day">
+            <>
+              <canvas
+                class="card__pixels"
+                data-card-pixels
+                aria-hidden="true"
+              />
+              <header>
+                <>
+                  <span>{day.day}</span>
+                  <h3>{day.title}</h3>
+                </>
+              </header>
+              <div class="agenda-list">
+                {day.items.map(([time, activity]) => (
+                  <div>
+                    <strong>{time}</strong>
+                    <span>{activity}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

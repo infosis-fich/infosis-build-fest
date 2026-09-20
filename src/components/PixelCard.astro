@@ -1,0 +1,84 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<article class="card">
+  <canvas class="card__pixels" data-card-pixels aria-hidden="true"></canvas>
+  <h3 class="card__title">{title}</h3>
+  <p class="card__body">{description}</p>
+</article>
+
+<script>
+  const canvases =
+    document.querySelectorAll<HTMLCanvasElement>("[data-card-pixels]");
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  const colors = ["#c9e9f5", "#4da9d4", "#147db5"];
+
+  canvases.forEach((canvas, cardIndex) => {
+    const context = canvas.getContext("2d");
+    const card = canvas.closest<HTMLElement>(".card");
+    if (!context || !card) return;
+    const particles = Array.from({ length: 24 }, (_, index) => ({
+      x: 0,
+      y: 0,
+      size: 1.5 + (index % 3) * 0.7,
+      speed: 0.22 + (index % 4) * 0.08,
+      life: 0.25 + (index % 5) * 0.12,
+      color: colors[(index + cardIndex) % colors.length],
+    }));
+
+    const resize = () => {
+      const bounds = card.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.round(bounds.width * dpr));
+      canvas.height = Math.max(1, Math.round(bounds.height * dpr));
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const reset = (
+      particle: (typeof particles)[number],
+      width: number,
+      height: number,
+      index: number,
+    ) => {
+      particle.x = width * (0.45 + ((index * 17) % 54) / 100);
+      particle.y = height - ((index * 23) % 132) - 4;
+      particle.life = 0.25 + ((index * 13) % 70) / 100;
+    };
+
+    const draw = () => {
+      const width = card.clientWidth;
+      const height = card.clientHeight;
+      context.clearRect(0, 0, width, height);
+
+      particles.forEach((particle, index) => {
+        if (!particle.y) reset(particle, width, height, index);
+        if (!reducedMotion) {
+          particle.y += particle.speed;
+          particle.life -= 0.004;
+          if (particle.y > height + 4 || particle.life <= 0)
+            reset(particle, width, height, index);
+        }
+        context.globalAlpha = reducedMotion
+          ? 0.3
+          : Math.min(0.78, particle.life);
+        context.fillStyle = particle.color;
+        context.fillRect(particle.x, particle.y, particle.size, particle.size);
+      });
+      context.globalAlpha = 1;
+
+      if (!reducedMotion) requestAnimationFrame(draw);
+    };
+
+    resize();
+    draw();
+    window.addEventListener("resize", resize);
+  });
+</script>

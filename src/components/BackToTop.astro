@@ -1,0 +1,24 @@
+<a class="back-to-top" href="#top" aria-label="Volver arriba" data-back-to-top>
+  <span aria-hidden="true">↑</span>
+</a>
+
+<script>
+  const button =
+    document.querySelector<HTMLAnchorElement>("[data-back-to-top]");
+  if (button) {
+    const update = () =>
+      button.classList.toggle("is-visible", window.scrollY > 480);
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      const lenis = (
+        window as Window & {
+          __infosisLenis?: { scrollTo: (target: number) => void };
+        }
+      ).__infosisLenis;
+      if (lenis) lenis.scrollTo(0);
+      else window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+</script>

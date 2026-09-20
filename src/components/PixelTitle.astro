@@ -1,0 +1,196 @@
+---
+const patterns: Record<string, string[]> = {
+  B: ["110", "101", "110", "101", "110"],
+  D: ["110", "101", "101", "101", "110"],
+  E: ["111", "100", "110", "100", "111"],
+  F: ["111", "100", "110", "100", "100"],
+  I: ["1", "1", "1", "1", "1"],
+  L: ["100", "100", "100", "100", "111"],
+  N: ["1001", "1101", "1111", "1011", "1001"],
+  O: ["111", "101", "101", "101", "111"],
+  S: ["111", "100", "111", "001", "111"],
+  T: ["111", "010", "010", "010", "010"],
+  U: ["101", "101", "101", "101", "111"],
+};
+
+const pixel = 16;
+const rowHeight = 16;
+const letterGap = 8;
+const spaceWidth = 2;
+const colors = ["#c9e9f5", "#8fd0e9", "#4da9d4", "#147db5", "#075787"];
+const mainTitle = "INFOSIS BUILD";
+const secondaryTitle = "FEST";
+
+const columnWidths = (width: number) =>
+  width === 3 ? [16, 24, 16] : Array(width).fill(pixel);
+const glyphWidth = (letter: string) =>
+  letter === " "
+    ? spaceWidth * pixel
+    : columnWidths(patterns[letter][0].length).reduce(
+        (sum, width) => sum + width,
+        0,
+      );
+const pixelsFor = (title: string) => {
+  let cursor = 0;
+  return [...title].flatMap((letter) => {
+    if (letter === " ") {
+      cursor += glyphWidth(letter) + letterGap;
+      return [];
+    }
+
+    const rows = patterns[letter];
+    const widths = columnWidths(rows[0].length);
+    const letterX = cursor;
+    cursor += glyphWidth(letter) + letterGap;
+
+    return rows.flatMap((row, rowIndex) => {
+      const blocks: { x: number; y: number; width: number; fill: string }[] =
+        [];
+      let runStart = -1;
+
+      [...row, "0"].forEach((value, columnIndex) => {
+        if (value === "1" && runStart === -1) runStart = columnIndex;
+        if (value !== "1" && runStart !== -1) {
+          const xOffset = widths
+            .slice(0, runStart)
+            .reduce((sum, width) => sum + width, 0);
+          const width = widths
+            .slice(runStart, columnIndex)
+            .reduce((sum, itemWidth) => sum + itemWidth, 0);
+          blocks.push({
+            x: letterX + xOffset,
+            y: rowIndex * rowHeight,
+            width,
+            fill: colors[rowIndex],
+          });
+          runStart = -1;
+        }
+      });
+
+      return blocks;
+    });
+  });
+};
+
+const mainPixels = pixelsFor(mainTitle);
+const festPixels = pixelsFor(secondaryTitle);
+---
+
+<h1 class="pixel-title">
+  <span class="sr-only">Infosis Build Fest 2026</span>
+  <svg
+    class="pixel-title__svg"
+    viewBox="0 0 672 80"
+    role="img"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <g shape-rendering="crispEdges">
+      {
+        mainPixels.map((block) => (
+          <rect
+            x={block.x}
+            y={block.y}
+            width={block.width}
+            height={rowHeight}
+            fill={block.fill}
+            data-pixel
+          />
+        ))
+      }
+    </g>
+  </svg>
+  <span class="pixel-title__second-line">
+    <svg
+      class="pixel-title__fest"
+      viewBox="0 0 256 80"
+      role="img"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g shape-rendering="crispEdges">
+        {
+          festPixels.map((block) => (
+            <rect
+              x={block.x}
+              y={block.y}
+              width={block.width}
+              height={rowHeight}
+              fill={block.fill}
+              data-pixel
+            />
+          ))
+        }
+      </g>
+    </svg>
+  </span>
+</h1>
+
+<script>
+  import { gsap } from "gsap";
+
+  const pixels = document.querySelectorAll<SVGRectElement>("[data-pixel]");
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (reducedMotion) {
+    gsap.set(pixels, { opacity: 1, scale: 1, y: 0 });
+  } else {
+    gsap.set(pixels, {
+      opacity: 0,
+      scale: 0.72,
+      y: () => gsap.utils.random(-18, 18),
+      transformOrigin: "center",
+    });
+    gsap.to(pixels, {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      duration: 0.3,
+      stagger: { each: 0.008, from: "random" },
+      ease: "power2.out",
+    });
+
+    pixels.forEach((pixel, index) => {
+      const svg = pixel.ownerSVGElement;
+      const parent = pixel.parentElement;
+      if (!svg || !parent) return;
+
+      const x = Number(pixel.getAttribute("x") || 0);
+      const y = Number(pixel.getAttribute("y") || 0);
+      const width = Number(pixel.getAttribute("width") || 16);
+      const height = Number(pixel.getAttribute("height") || 16);
+       const fill = pixel.getAttribute("fill") || "#c9e9f5";
+
+      for (let particleIndex = 0; particleIndex < 3; particleIndex += 1) {
+        const particle = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect",
+        );
+        const particleSize = gsap.utils.random(2, 4);
+        particle.setAttribute("x", String(x + gsap.utils.random(0, width)));
+        particle.setAttribute("y", String(y - gsap.utils.random(18, 70)));
+        particle.setAttribute("width", String(particleSize));
+        particle.setAttribute("height", String(particleSize));
+        particle.setAttribute("fill", fill);
+        particle.setAttribute("opacity", "0");
+        parent.appendChild(particle);
+
+        gsap.to(particle, {
+          opacity: gsap.utils.random(0.35, 0.9),
+          y: y + gsap.utils.random(-8, height),
+          duration: gsap.utils.random(0.3, 0.65),
+          delay: index * 0.004 + particleIndex * 0.025,
+          ease: "power2.out",
+          onComplete: () =>
+            gsap.to(particle, {
+              opacity: 0,
+              duration: 0.18,
+              onComplete: () => particle.remove(),
+            }),
+        });
+      }
+    });
+  }
+</script>

@@ -1,0 +1,23 @@
+---
+import { event } from "../data/event";
+import PixelTitle from "./PixelTitle.astro";
+import LogoSilhouette from "./LogoSilhouette.astro";
+import Organizer from "./Organizer.astro";
+import CursorRain from "./CursorRain.astro";
+---
+
+<section class="hero" id="top" data-reveal>
+  <LogoSilhouette />
+  <CursorRain />
+  <div class="shell hero-inner">
+    <p class="eyebrow"><strong>{event.dates}</strong> · {event.mode}</p>
+    <PixelTitle />
+    <p class="hero-lead">{event.description}</p>
+    <div class="actions">
+       <a class="button primary" href={event.registrationUrl} data-registration-trigger
+        >→ Inscribirme ahora</a
+      ><a class="button" href="#agenda">▣ Ver la agenda</a>
+    </div>
+  </div>
+  <Organizer />
+</section>
