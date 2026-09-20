@@ -1,6 +1,3 @@
-body {
-  font-family: "JetBrains Mono", monospace;
-}
 .pixel-title {
   --logo-h: clamp(2rem, 8.5vw, 5rem);
   display: block;
@@ -26,25 +23,8 @@ body {
   height: var(--logo-h);
   overflow: visible;
 }
-.pixel-title__suffix {
-  display: block;
-  color: var(--text);
-  font-size: calc(var(--logo-h) * 0.55);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  white-space: nowrap;
-}
 .pixel-title rect {
   transform-box: fill-box;
-}
-.hero-meta {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  color: var(--violet);
-  font-size: 11px;
-  margin: -10px 0 24px;
 }
 /* Estructura editorial de la landing. */
 .section {
@@ -55,15 +35,8 @@ body {
   border-top: 0;
 }
 .section__head {
-  max-width: 46ch;
+  max-width: 58ch;
   margin-bottom: clamp(2.25rem, 5vw, 3.25rem);
-}
-.section__eyebrow {
-  display: block;
-  margin-bottom: 1rem;
-  color: var(--violet);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
 }
 .section__title {
   margin: 0;
@@ -75,17 +48,8 @@ body {
 .section--first .section__title {
   white-space: nowrap;
 }
-.section__title strong,
-.section__title em {
-  font-weight: 400;
-  color: var(--text);
-}
-.section__title em {
-  color: var(--violet);
-  font-style: normal;
-}
 .section__sub {
-  max-width: 52ch;
+  max-width: 62ch;
   margin: 0.875rem 0 0;
   color: var(--muted);
   line-height: 1.6;
@@ -203,8 +167,44 @@ body {
   color: var(--muted);
   line-height: 1.6;
 }
+.cta__benefits {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0 auto 1.5rem;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  list-style: none;
+}
+.cta__benefits li::before {
+  content: "✓ ";
+  color: var(--violet);
+}
 .cta--hero .button {
   margin-inline: auto;
+}
+.cta-pricing {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+.cta-pricing__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--line-strong);
+  padding: 0.7rem 0.9rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.cta-pricing__item strong {
+  color: var(--violet);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 .registration-modal {
   width: min(32rem, calc(100% - 2rem));
@@ -256,13 +256,25 @@ body {
   color: var(--muted);
   line-height: 1.6;
 }
-.registration-modal__price {
-  display: block;
-  margin: 1.25rem 0 1.75rem;
-  color: var(--blue);
+.registration-modal__prices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 1.25rem 0 0.75rem;
+  color: var(--muted);
   font-size: 0.875rem;
 }
-
+.registration-modal__prices strong {
+  color: var(--violet);
+  font-weight: 500;
+}
+.registration-modal__benefits {
+  margin-top: 0 !important;
+  font-size: 0.8125rem;
+}
+.registration-modal__card > .button {
+  margin-top: 1.5rem;
+}
 @media (max-width: 800px) {
   .agenda {
     grid-template-columns: 1fr;

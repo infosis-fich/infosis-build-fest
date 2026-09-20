@@ -12,13 +12,14 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - **Fechas:** 30 de septiembre y 1 de octubre de 2026.
 - **Modalidad:** presencial.
 - **Sede:** laboratorio de cómputo de la Facultad Integral del Chaco.
-- **Público:** estudiantes inscritos en el semestre de Ingeniería Informática y Sistemas.
-- **Costo:** 30 Bs.
+- **Público:** estudiantes de la Facultad y público general.
+- **Costo:** 30 Bs para estudiantes de la Facultad y 50 Bs para público general.
+- **Beneficios:** certificado de participación y refrigerio durante el segundo día.
 - **Día 1:** workshop guiado de desarrollo web, de 09:00 a 12:00 y de 14:30 a 17:30.
 - **Día 2:** challenge de desarrollo web, de 09:00 a 15:00.
 - **Contacto:** WhatsApp +591 67786830.
-- **GitHub:** https://github.com/infosis-fich.
-- **TikTok:** https://www.tiktok.com/@infosis.uagrm.fich.
+- **GitHub:** <https://github.com/infosis-fich>.
+- **TikTok:** <https://www.tiktok.com/@infosis.uagrm.fich>.
 
 ## Stack utilizado
 
@@ -51,20 +52,20 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - Silueta institucional renderizada en Canvas.
 - Banda de organización integrada con logo monocromático.
 
-### Qué es Build Fest 2026
+### Qué es Build Fest
 
-- Subtítulo breve y objetivo.
+- Explicación breve y directa de la actividad.
 - Cuatro cards con lluvia pixelada:
-  - Workshop · Taller práctico.
-  - Challenge · Reto de desarrollo.
-  - Para estudiantes.
-  - Desde cero.
+  - Día 1 · Aprende haciendo.
+  - Día 2 · Ponlo en práctica.
+  - Para estudiantes de la Facultad.
+  - Para público general.
 - Sin numeración para liberar espacio visual.
 
-### Cómo construimos
+### Qué vas a aprender
 
 - Cuatro cards con la misma estructura y lluvia pixelada que la sección anterior.
-- Contenido resumido sobre Spec-Driven Development, OpenCode, Full-stack y flujo profesional con Visual Studio Code, Git y GitHub.
+- Explicación sencilla sobre cómo pasar de una idea a un proyecto web, usar OpenCode, conectar las partes de una aplicación y trabajar con Visual Studio Code, Git y GitHub.
 
 ### Agenda
 
@@ -78,7 +79,8 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - Sección abierta, sin apariencia de card, visualmente cercana al hero.
 - Lluvia de cursor a todo el ancho de la sección.
 - Contenido centrado.
-- Costo visible como texto normal: **30 Bs**.
+- Precios visibles: **30 Bs** para estudiantes de la Facultad y **50 Bs** para público general.
+- Beneficios visibles: certificado de participación y refrigerio durante el segundo día.
 - CTA: **Inscribirme ahora**.
 
 ### Footer
@@ -154,7 +156,7 @@ El contenido principal se mantiene en `src/data/event.ts`:
 - Nombre y fechas del evento.
 - Modalidad, sede y público.
 - Descripción y prerrequisitos.
-- Costo y enlace de inscripción.
+- Precios, beneficios y enlace de inscripción.
 - Highlights.
 - Tracks y herramientas.
 - Agenda.

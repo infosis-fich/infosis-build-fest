@@ -2,10 +2,11 @@
 import "../styles/global.css";
 import BackToTop from "./BackToTop.astro";
 import RegistrationModal from "./RegistrationModal.astro";
+import { event } from "../data/event";
 
 const {
-  title = "Infosis Build Fest 2026 · Inscríbete ahora",
-  description = "Workshop y challenge de desarrollo con agentes de IA para estudiantes de Ingeniería Informática y Sistemas, el 30 de septiembre y 1 de octubre de 2026.",
+  title = `${event.title} · Inscríbete ahora`,
+  description = event.description,
   image = "/portada.png",
 } = Astro.props;
 const canonical = Astro.site

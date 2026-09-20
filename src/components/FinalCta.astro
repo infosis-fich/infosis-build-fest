@@ -7,14 +7,28 @@ import CursorRain from "./CursorRain.astro";
   <CursorRain /><div class="shell">
     <div class="cta__content">
       <p class="cta__eyebrow">INSCRIPCIÓN</p><h2 class="cta__title">
-        Construye el futuro
+        {event.copy.registrationTitle}
       </h2><p class="cta__body">
-        Forma parte de dos días de aprendizaje práctico, colaboración y
-        desarrollo con agentes de IA. El costo de inscripción es de <strong
-          >30 Bs</strong
-        >.
-      </p><a class="button primary" href={event.registrationUrl} data-registration-trigger
-        >→ Inscribirme ahora</a>
+        {event.copy.registrationIntro}
+      </p>
+      <ul class="cta__benefits">
+        {event.benefits.map((benefit) => <li>{benefit}</li>)}
+      </ul>
+      <a
+        class="button primary"
+        href={event.registrationUrl}
+        data-registration-trigger>→ Inscribirme ahora</a
+      >
+      <div class="cta-pricing" aria-label="Precios de inscripción">
+        {
+          event.pricing.map(([audience, price]) => (
+            <div class="cta-pricing__item">
+              <span>{audience}</span>
+              <strong>{price}</strong>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
