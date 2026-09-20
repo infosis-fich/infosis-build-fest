@@ -6,11 +6,12 @@ import RegistrationModal from "./RegistrationModal.astro";
 const {
   title = "Infosis Build Fest 2026 · Facultad Integral del Chaco",
   description = "Workshop y challenge de desarrollo con agentes de IA para estudiantes de Ingeniería Informática y Sistemas.",
-  image = "/ico-infosis-transparent.png",
+  image = "/portada.png",
 } = Astro.props;
 const canonical = Astro.site
   ? new URL(Astro.url.pathname, Astro.site)
   : Astro.url;
+const socialImage = new URL(image, Astro.url);
 ---
 
 <html lang="es">
@@ -29,11 +30,14 @@ const canonical = Astro.site
       content={title}
     /><meta property="og:description" content={description} /><meta
       property="og:image"
-      content={new URL(image, Astro.url)}
-    /><meta name="twitter:card" content="summary_large_image" /><meta
-      name="twitter:title"
-      content={title}
-    /><meta name="twitter:description" content={description} /><link
+      content={socialImage}
+    /><meta property="og:image:alt" content="Infosis Build Fest 2026" /><meta
+      name="twitter:card"
+      content="summary_large_image"
+    /><meta name="twitter:title" content={title} /><meta
+      name="twitter:description"
+      content={description}
+    /><meta name="twitter:image" content={socialImage} /><link
       rel="icon"
       href="/ico-infosis-transparent.png"
       type="image/png"
