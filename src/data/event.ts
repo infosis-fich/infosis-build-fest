@@ -4,6 +4,8 @@ export const event = {
   mode: "Presencial",
   description:
     "Una experiencia intensiva de desarrollo web para estudiantes de la Facultad y público general. No necesitas conocimientos previos: construye, aprende y compite usando agentes de IA.",
+  seoDescription:
+    "Workshop y challenge presencial de desarrollo web el 30 de septiembre y 1 de octubre de 2026, para estudiantes de la Facultad y público general.",
   registrationUrl: "#inscripcion",
   copy: {
     eventIntro:
