@@ -1,58 +1,80 @@
 export const event = {
   title: "Infosis Build Fest 2026",
-  shortTitle: "INFOSIS BUILD FEST",
   dates: "30 de septiembre y 1 de octubre de 2026",
   mode: "Presencial",
-  location: "Facultad Integral del Chaco",
-  audience: "Estudiantes inscritos en el semestre 2026",
   description:
-    "Una experiencia intensiva de desarrollo web para construir, aprender y competir usando agentes de IA. No necesitas conocimientos previos.",
-  prerequisites: "No se necesitan conocimientos previos",
+    "Una experiencia intensiva de desarrollo web para estudiantes de la Facultad y público general. No necesitas conocimientos previos: construye, aprende y compite usando agentes de IA.",
   registrationUrl: "#inscripcion",
+  copy: {
+    eventIntro:
+      "Es un evento presencial de dos días para aprender a crear proyectos web de forma práctica, trabajar en equipo y resolver un reto usando herramientas actuales.",
+    learningIntro:
+      "Aprenderás el proceso completo para pasar de una idea a un proyecto web funcional, con explicaciones claras y acompañamiento durante el camino.",
+    agendaIntro:
+      "Dos días para aprender, construir y resolver un reto en equipo.",
+    registrationTitle: "Construye el futuro",
+    registrationIntro:
+      "Forma parte de dos días de aprendizaje práctico, colaboración y desarrollo con agentes de IA. Todos los participantes reciben:",
+    registrationPending:
+      "La inscripción para la Infosis Build Fest 2026 todavía no se encuentra disponible. Pronto compartiremos el formulario y toda la información para registrarte.",
+  },
+  pricing: [
+    ["Estudiantes de la Facultad", "30 Bs"],
+    ["Público general", "50 Bs"],
+  ],
+  benefits: [
+    "Certificado de participación",
+    "Refrigerio durante el segundo día",
+  ],
   organizers: ["Ingeniería Informática y Sistemas"],
-  tools: ["OpenCode", "Visual Studio Code", "Git", "GitHub"],
+  contact: {
+    whatsapp:
+      "https://wa.me/59167786830?text=Hola%20Fernando%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20la%20Infosis%20Build%20Fest%202026",
+    github: "https://github.com/infosis-fich",
+    tiktok: "https://www.tiktok.com/@infosis.uagrm.fich",
+  },
   highlights: [
     [
       "01",
-      "Workshop · Taller práctico",
-      "El primer día construirás un proyecto web completo, guiado paso a paso desde la idea hasta una solución funcional.",
+      "Día 1 · Aprende haciendo",
+      "Durante el primer día crearás un proyecto web paso a paso, desde la idea inicial hasta una solución funcional.",
     ],
     [
       "02",
-      "Challenge · Reto de desarrollo",
-      "El segundo día resolverás un reto de desarrollo web en equipo para construir, probar y presentar una solución.",
+      "Día 2 · Ponlo en práctica",
+      "Durante el segundo día trabajarás en equipo para resolver un reto, probar tu solución y presentarla.",
     ],
     [
       "03",
-      "Para estudiantes",
-      "Actividad dirigida a estudiantes de la carrera de Ingeniería Informática y Sistemas.",
+      "Para estudiantes de la Facultad",
+      "Una actividad pensada para estudiantes de la Facultad que quieren aprender y construir un proyecto web.",
     ],
     [
       "04",
-      "Desde cero",
-      "No necesitas conocimientos previos, solo ganas de aprender, crear y colaborar.",
+      "Para público general",
+      "También puedes participar si formas parte del público general y quieres aprender, crear y colaborar.",
     ],
   ],
   tracks: [
     [
       "01",
-      "Spec-Driven Development · Desarrollo guiado por especificaciones",
-      "Define qué construir antes de escribir código y convierte requisitos en una guía ejecutable.",
+      "Planifica antes de programar",
+      "Define qué construir antes de escribir código y convierte las ideas en pasos claros.",
     ],
     [
       "02",
-      "OpenCode · Agente de IA",
-      "Explora cómo un agente de IA puede acompañar el análisis, la implementación y la revisión.",
+      "Construye con apoyo de IA",
+      "Aprende cómo usar OpenCode para analizar ideas, escribir código y revisar tu proyecto.",
     ],
     [
       "03",
-      "Full-stack · Frontend, backend y base de datos",
-      "Integra base de datos, backend y frontend en un proyecto funcional.",
+      "Conecta las partes de una aplicación",
+      "Conoce cómo se relacionan la interfaz, el backend y la base de datos en un proyecto funcional.",
     ],
     [
       "04",
-      "Flujo profesional · Herramientas de desarrollo",
-      "Trabaja con Visual Studio Code, Git, GitHub y buenas prácticas de colaboración.",
+      "Trabaja con herramientas reales",
+      "Usa Visual Studio Code, Git y GitHub para organizar tu trabajo y colaborar con otras personas.",
     ],
   ],
   agenda: [
@@ -86,11 +108,6 @@ export const event = {
       ],
     },
   ],
-  contacts: [
-    "Carrera de Ingeniería Informática y Sistemas",
-    "Facultad Integral del Chaco",
-  ],
-  socialUrl: "#top",
 } as const;
 
 export type Event = typeof event;

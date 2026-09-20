@@ -1,3 +1,7 @@
+---
+import { event } from "../data/event";
+---
+
 <div class="sponsors" data-reveal aria-label="Organización del evento">
   <div class="shell sponsors-inner">
     <h2 class="sponsors__title">Organiza</h2><ul class="sponsors__list">
@@ -8,9 +12,15 @@
           alt=""
           width="48"
           height="48"
-        /><strong
-          ><span>Ingeniería Informática</span><span>y Sistemas</span></strong
-        >
+        /><strong>
+          {
+            event.organizers[0]
+              .split(" y ")
+              .map((line, index) => (
+                <span>{index === 0 ? line : `y ${line}`}</span>
+              ))
+          }
+        </strong>
       </li>
     </ul>
   </div>
