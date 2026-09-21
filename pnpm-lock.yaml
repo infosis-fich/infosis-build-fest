@@ -29,6 +29,9 @@ importers:
       simple-icons:
         specifier: ^16.31.0
         version: 16.31.0
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
       zod:
         specifier: ^4.6.5
         version: 4.6.5
