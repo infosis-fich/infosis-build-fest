@@ -40,10 +40,11 @@ La interfaz utiliza una estética oscura, editorial y pixelada, con componentes,
 - **Fechas:** 30 de septiembre y 1 de octubre de 2026.
 - **Modalidad:** presencial.
 - **Lugar:** laboratorio de cómputo de la Facultad Integral del Chaco.
-- **Público:** estudiantes de Ingeniería Informática y Sistemas inscritos en el semestre.
+- **Público:** estudiantes de la Facultad y público general.
 - **Día 1:** workshop guiado, de 09:00 a 12:00 y de 14:30 a 17:30.
 - **Día 2:** challenge de desarrollo web, de 09:00 a 15:00.
-- **Inscripción:** 30 Bs.
+- **Inscripción:** 30 Bs para estudiantes de la Facultad y 50 Bs para público general.
+- **Beneficios:** certificado de participación y refrigerio durante el segundo día.
 - **Conocimientos previos:** no son necesarios.
 
 ## Características
@@ -53,7 +54,7 @@ La interfaz utiliza una estética oscura, editorial y pixelada, con componentes,
 - Logo institucional monocromático y silueta en Canvas.
 - Cards con lluvia pixelada sutil.
 - Agenda organizada en dos cards, una por día.
-- CTA final centrado con el costo visible.
+- CTA final centrado con ambos precios y beneficios visibles.
 - Header sticky con navegación, redes e inscripción.
 - Footer enfocado únicamente en contacto.
 - Scroll suave, revelado al hacer scroll y botón para volver arriba.
@@ -139,13 +140,13 @@ El header presenta el logo institucional, los enlaces Inicio, Evento, Tecnologí
 
 El hero muestra fechas, modalidad, descripción, CTAs, título pixelado, silueta institucional y lluvia de cursor.
 
-### Qué es Build Fest 2026
+### Qué es Build Fest
 
-Resume la propuesta en cuatro cards: Workshop, Challenge, Para estudiantes y Desde cero.
+Explica que es un evento presencial de dos días para aprender a crear proyectos web, trabajar en equipo y resolver un reto. Sus cuatro cards presentan el aprendizaje práctico, el reto del segundo día, estudiantes de la Facultad y público general.
 
-### Cómo construimos
+### Qué vas a aprender
 
-Presenta Spec-Driven Development, OpenCode, Full-stack y el flujo profesional con Visual Studio Code, Git y GitHub.
+Explica de forma sencilla cómo pasar de una idea a un proyecto web, usar OpenCode, conectar las distintas partes de una aplicación y trabajar con Visual Studio Code, Git y GitHub.
 
 ### Agenda
 
@@ -153,7 +154,7 @@ La agenda se divide en dos cards: Día 1 para el workshop guiado y Día 2 para e
 
 ### Inscripción y footer
 
-La llamada final mantiene la estética abierta del hero, con lluvia de cursor, contenido centrado, costo de **30 Bs** y botón **Inscribirme ahora**.
+La llamada final mantiene la estética abierta del hero, con lluvia de cursor, contenido centrado, precios de **30 Bs** para estudiantes de la Facultad y **50 Bs** para público general, además de los beneficios incluidos. El botón **Inscribirme ahora** permanece pendiente de la definición del formulario.
 
 El footer prioriza el contacto mediante WhatsApp, GitHub y TikTok.
 
@@ -193,7 +194,7 @@ El resultado se genera en `dist/` y puede publicarse en cualquier hosting compat
 La información principal se edita en `src/data/event.ts`:
 
 - Nombre, fechas, modalidad y sede.
-- Público, descripción, costo y prerrequisitos.
+- Público, descripción, precios, beneficios y prerrequisitos.
 - Highlights, tracks y herramientas.
 - Agenda.
 - Contactos y redes.
@@ -203,8 +204,8 @@ Los estilos están en `src/styles/global.css` y `src/styles/enhancements.css`. L
 ## Contacto
 
 - WhatsApp: `+591 67786830`.
-- GitHub: https://github.com/infosis-fich.
-- TikTok: https://www.tiktok.com/@infosis.uagrm.fich.
+- GitHub: <https://github.com/infosis-fich>.
+- TikTok: <https://www.tiktok.com/@infosis.uagrm.fich>.
 
 <p align="right">(<a href="#readme-top">volver arriba</a>)</p>
 

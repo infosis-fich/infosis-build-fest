@@ -1,5 +1,6 @@
 ---
 import { siGithub, siTiktok, siWhatsapp } from "simple-icons";
+import { event } from "../data/event";
 ---
 
 <a class="skip" href="#contenido">Saltar al contenido</a>
@@ -24,13 +25,13 @@ import { siGithub, siTiktok, siWhatsapp } from "simple-icons";
       <span class="sr-only">Abrir menú</span><span aria-hidden="true">☰</span>
     </button>
     <nav id="main-navigation" aria-label="Navegación principal">
-      <a href="#evento">Evento</a><a href="#herramientas">Tecnología</a><a href="#agenda">Agenda</a><a
-        href="#inscripcion">Participa</a
-      >
+      <a href="#evento">Evento</a><a href="#herramientas">Tecnología</a><a
+        href="#agenda">Agenda</a
+      ><a href="#inscripcion">Participa</a>
     </nav>
     <div class="header-socials" aria-label="Contacto y redes">
       <a
-        href="https://wa.me/59167786830?text=Hola%20Fernando%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20la%20Infosis%20Build%20Fest%202026"
+        href={event.contact.whatsapp}
         target="_blank"
         rel="noreferrer"
         aria-label="Más información por WhatsApp"
@@ -39,7 +40,7 @@ import { siGithub, siTiktok, siWhatsapp } from "simple-icons";
         ></a
       >
       <a
-        href="https://github.com/infosis-fich"
+        href={event.contact.github}
         target="_blank"
         rel="noreferrer"
         aria-label="GitHub de Infosis"
@@ -48,7 +49,7 @@ import { siGithub, siTiktok, siWhatsapp } from "simple-icons";
         ></a
       >
       <a
-        href="https://www.tiktok.com/@infosis.uagrm.fich"
+        href={event.contact.tiktok}
         target="_blank"
         rel="noreferrer"
         aria-label="TikTok de Infosis"
@@ -57,7 +58,9 @@ import { siGithub, siTiktok, siWhatsapp } from "simple-icons";
         ></a
       >
     </div>
-   <a class="header-cta" href="#inscripcion" data-registration-trigger>Inscribirme <span>↗</span></a>
+    <a class="header-cta" href="#inscripcion" data-registration-trigger
+      >Inscribirme <span>↗</span></a
+    >
   </div>
 </header>
 <script>

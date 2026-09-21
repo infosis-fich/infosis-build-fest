@@ -1,26 +1,64 @@
-<dialog class="registration-modal" data-registration-modal aria-labelledby="registration-title">
+---
+import { event } from "../data/event";
+---
+
+<dialog
+  class="registration-modal"
+  data-registration-modal
+  aria-labelledby="registration-title"
+>
   <div class="registration-modal__card">
-    <button class="registration-modal__close" type="button" data-registration-close aria-label="Cerrar aviso">×</button>
+    <button
+      class="registration-modal__close"
+      type="button"
+      data-registration-close
+      aria-label="Cerrar aviso">×</button
+    >
     <span class="registration-modal__eyebrow">INSCRIPCIÓN</span>
     <h2 id="registration-title">Aún no disponible</h2>
-    <p>La inscripción para la Infosis Build Fest 2026 todavía no se encuentra disponible. Pronto compartiremos el formulario y toda la información para registrarte.</p>
-    <span class="registration-modal__price">Costo de inscripción: 30 Bs</span>
-    <button class="button primary" type="button" data-registration-close>Entendido</button>
+    <p>
+      {event.copy.registrationPending}
+    </p>
+    <div class="registration-modal__prices">
+      {
+        event.pricing.map(([audience, price]) => (
+          <span>
+            {audience}: <strong>{price}</strong>
+          </span>
+        ))
+      }
+    </div>
+    <p class="registration-modal__benefits">
+      Incluye {event.benefits.join(" y ").toLowerCase()}.
+    </p>
+    <button class="button primary" type="button" data-registration-close
+      >Entendido</button
+    >
   </div>
 </dialog>
 
 <script>
-  const modal = document.querySelector<HTMLDialogElement>('[data-registration-modal]');
-  const triggers = document.querySelectorAll<HTMLAnchorElement>('[data-registration-trigger]');
-  const closeButtons = modal?.querySelectorAll<HTMLButtonElement>('[data-registration-close]');
+  const modal = document.querySelector<HTMLDialogElement>(
+    "[data-registration-modal]",
+  );
+  const triggers = document.querySelectorAll<HTMLAnchorElement>(
+    "[data-registration-trigger]",
+  );
+  const closeButtons = modal?.querySelectorAll<HTMLButtonElement>(
+    "[data-registration-close]",
+  );
 
-  triggers.forEach((trigger) => trigger.addEventListener('click', (event) => {
-    event.preventDefault();
-    modal?.showModal();
-  }));
+  triggers.forEach((trigger) =>
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      modal?.showModal();
+    }),
+  );
 
-  closeButtons?.forEach((button) => button.addEventListener('click', () => modal?.close()));
-  modal?.addEventListener('click', (event) => {
+  closeButtons?.forEach((button) =>
+    button.addEventListener("click", () => modal?.close()),
+  );
+  modal?.addEventListener("click", (event) => {
     if (event.target === modal) modal.close();
   });
 </script>
