@@ -80,7 +80,7 @@ La interfaz pública utiliza una estética oscura, editorial y pixelada, con com
 | Gráficos         | Canvas y SVG            |
 | Iconos de marcas | `simple-icons`          |
 | Package manager  | pnpm                    |
-| Salida           | SSR con adapter Node    |
+| Salida           | SSR con adapter Vercel |
 
 ## Identidad visual
 
@@ -188,8 +188,8 @@ El footer prioriza el contacto mediante WhatsApp, GitHub y TikTok.
 
 ## API y persistencia
 
-La aplicación utiliza Astro en modo `server` con `@astrojs/node` en modo
-standalone. Las rutas API delegan la lógica en los módulos de dominio,
+La aplicación utiliza Astro en modo `server` con `@astrojs/vercel`. Las rutas
+API delegan la lógica en los módulos de dominio,
 aplicación, infraestructura y presentación.
 
 ### Rutas disponibles
@@ -247,9 +247,8 @@ pnpm preview  # Vista previa de la aplicación
 pnpm build
 ```
 
-El resultado se genera en `dist/` y debe desplegarse en un entorno compatible
-con Node.js y ejecución SSR. Las variables de entorno deben configurarse en el
-proveedor de despliegue.
+El resultado se genera en `dist/` y debe desplegarse en Vercel. Las variables de
+entorno deben configurarse en el proyecto de Vercel.
 
 ## Contenido y personalización
 

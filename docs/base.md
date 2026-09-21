@@ -24,7 +24,7 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 ## Stack utilizado
 
 - **Astro** para la interfaz y las rutas API bajo demanda.
-- **Node.js** como adapter SSR en modo standalone.
+- **Vercel** como plataforma SSR mediante `@astrojs/vercel`.
 - **TypeScript** para la interfaz, dominio, casos de uso y scripts.
 - **Supabase** como cliente y persistencia PostgreSQL.
 - **Zod** para validar entradas HTTP.
@@ -120,7 +120,7 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 
 ## Backend y persistencia
 
-La aplicación se ejecuta con salida `server` y adapter Node. Las rutas de
+La aplicación se ejecuta con salida `server` y adapter Vercel. Las rutas de
 Astro funcionan como adaptadores HTTP delgados y delegan la lógica en
 `src/modulos`.
 
