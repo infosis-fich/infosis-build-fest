@@ -14,8 +14,10 @@ import CursorRain from "./CursorRain.astro";
     <PixelTitle />
     <p class="hero-lead">{event.description}</p>
     <div class="actions">
-       <a class="button primary" href={event.registrationUrl} data-registration-trigger
-        >→ Inscribirme ahora</a
+      <a
+        class="button primary"
+        href={event.urlInscripcion}
+        data-disparador-inscripcion>→ Inscribirme ahora</a
       ><a class="button" href="#agenda">▣ Ver la agenda</a>
     </div>
   </div>

@@ -50,3 +50,5 @@ Thumbs.db
 
 # jetbrains setting folder
 .idea/
+
+.opencode/

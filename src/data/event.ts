@@ -6,7 +6,7 @@ export const event = {
     "Una experiencia intensiva de desarrollo web para estudiantes de la Facultad y público general. No necesitas conocimientos previos: construye, aprende y compite usando agentes de IA.",
   seoDescription:
     "Workshop y challenge presencial de desarrollo web el 30 de septiembre y 1 de octubre de 2026, para estudiantes de la Facultad y público general.",
-  registrationUrl: "#inscripcion",
+  urlInscripcion: "#inscripcion",
   copy: {
     eventIntro:
       "Es un evento presencial de dos días para aprender a crear proyectos web de forma práctica, trabajar en equipo y resolver un reto usando herramientas actuales.",
@@ -14,10 +14,10 @@ export const event = {
       "Aprenderás el proceso completo para pasar de una idea a un proyecto web funcional, con explicaciones claras y acompañamiento durante el camino.",
     agendaIntro:
       "Dos días para aprender, construir y resolver un reto en equipo.",
-    registrationTitle: "Construye el futuro",
-    registrationIntro:
+    tituloInscripcion: "Construye el futuro",
+    introduccionInscripcion:
       "Forma parte de dos días de aprendizaje práctico, colaboración y desarrollo con agentes de IA. Todos los participantes reciben:",
-    registrationPending:
+    inscripcionPendiente:
       "La inscripción para la Infosis Build Fest 2026 todavía no se encuentra disponible. Pronto compartiremos el formulario y toda la información para registrarte.",
   },
   pricing: [

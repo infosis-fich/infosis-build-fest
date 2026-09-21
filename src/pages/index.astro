@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import Layout from "../components/Layout.astro";
 import Navbar from "../components/Navbar.astro";
 import Hero from "../components/Hero.astro";
@@ -9,7 +11,8 @@ import FinalCta from "../components/FinalCta.astro";
 import Footer from "../components/Footer.astro";
 ---
 
-<Layout image="/portada.png"><Navbar /><main id="contenido">
+<Layout image="/portada.png"
+  ><Navbar /><main id="contenido">
     <Hero /><EventInfo /><Tracks /><Agenda /><FinalCta />
   </main><Footer /></Layout
 >

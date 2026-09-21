@@ -18,7 +18,7 @@ export function initSmoothScroll() {
       if (anchor.dataset.lenisBound) return;
       anchor.dataset.lenisBound = "true";
       anchor.addEventListener("click", (event) => {
-        const target = document.querySelector(
+        const target = document.querySelector<HTMLElement>(
           anchor.getAttribute("href") || "",
         );
         if (!target) return;
