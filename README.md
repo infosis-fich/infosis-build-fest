@@ -4,7 +4,7 @@
 
 <img src="./public/evento.PNG" alt="Infosis Build Fest 2026" width="560" />
 
-### Landing oficial del evento
+### Aplicación oficial del evento
 
 Evento presencial de la carrera de Ingeniería Informática y Sistemas de la Facultad Integral del Chaco.
 
@@ -27,13 +27,14 @@ Evento presencial de la carrera de Ingeniería Informática y Sistemas de la Fac
 - [Desarrollo](#desarrollo)
 - [Producción](#producción)
 - [Contenido y personalización](#contenido-y-personalización)
+- [API y persistencia](#api-y-persistencia)
 - [Contacto](#contacto)
 
 ## Sobre el proyecto
 
-Landing estática para presentar un workshop y un challenge de desarrollo web con OpenCode, Spec-Driven Development, Visual Studio Code, Git y GitHub.
+Aplicación web para presentar y gestionar la participación en un workshop y un challenge de desarrollo web con OpenCode, Spec-Driven Development, Visual Studio Code, Git y GitHub.
 
-La interfaz utiliza una estética oscura, editorial y pixelada, con componentes, animaciones, datos y recursos propios.
+La interfaz pública utiliza una estética oscura, editorial y pixelada, con componentes, animaciones, datos y recursos propios. El backend SSR gestiona inscripciones, verificación de estudiantes y pagos mediante Supabase y Veripagos.
 
 ## Información del evento
 
@@ -57,6 +58,8 @@ La interfaz utiliza una estética oscura, editorial y pixelada, con componentes,
 - CTA final centrado con ambos precios y beneficios visibles.
 - Header sticky con navegación, redes e inscripción.
 - Footer enfocado únicamente en contacto.
+- Modal de inscripción con verificación de estudiantes y flujo de pago QR.
+- API SSR para inscripciones, estudiantes y pagos.
 - Scroll suave, revelado al hacer scroll y botón para volver arriba.
 - Soporte para `prefers-reduced-motion` y navegación por teclado.
 - SEO básico, Open Graph, favicon e identidad institucional.
@@ -66,14 +69,18 @@ La interfaz utiliza una estética oscura, editorial y pixelada, con componentes,
 | Componente       | Tecnología              |
 | ---------------- | ----------------------- |
 | Framework        | Astro 7                 |
+| Runtime          | Node.js 22+             |
 | Lenguaje         | TypeScript              |
+| Persistencia     | Supabase / PostgreSQL   |
+| Validación       | Zod                     |
+| Integración      | Veripagos y Caja UAGRM  |
 | Estilos          | CSS propio y responsive |
 | Animaciones      | GSAP                    |
 | Scroll           | Lenis                   |
 | Gráficos         | Canvas y SVG            |
 | Iconos de marcas | `simple-icons`          |
 | Package manager  | pnpm                    |
-| Salida           | Sitio estático          |
+| Salida           | SSR con adapter Node    |
 
 ## Identidad visual
 
@@ -102,6 +109,12 @@ Página Astro
   -> Agenda
   -> Inscripción
   -> Footer y contactos
+
+API SSR
+  -> Controladores HTTP
+  -> Casos de uso
+  -> Supabase / PostgreSQL
+  -> Verificación estudiantil y Veripagos
 ```
 
 ### Organización física
@@ -123,7 +136,20 @@ src/
 │   ├── Footer.astro          # Contacto y redes
 │   └── BackToTop.astro       # Retorno al inicio
 ├── data/event.ts             # Fuente de datos del evento
-├── pages/index.astro         # Página principal
+├── pages/
+│   ├── index.astro           # Página principal
+│   └── api/
+│       ├── inscripciones.ts
+│       ├── estudiantes/verificar.ts
+│       └── pagos/
+│           ├── crear.ts
+│           ├── estado/[id].ts
+│           └── webhook.ts
+├── modulos/
+│   ├── dominio/              # Entidades y contratos
+│   ├── aplicacion/           # Casos de uso
+│   ├── infraestructura/      # Supabase, Caja UAGRM y Veripagos
+│   └── presentacion/          # Controladores y esquemas HTTP
 ├── scripts/
 │   ├── smooth-scroll.ts
 │   └── scroll-animations.ts
@@ -154,9 +180,38 @@ La agenda se divide en dos cards: Día 1 para el workshop guiado y Día 2 para e
 
 ### Inscripción y footer
 
-La llamada final mantiene la estética abierta del hero, con lluvia de cursor, contenido centrado, precios de **30 Bs** para estudiantes de la Facultad y **50 Bs** para público general, además de los beneficios incluidos. El botón **Inscribirme ahora** permanece pendiente de la definición del formulario.
+La llamada final mantiene la estética abierta del hero, con lluvia de cursor, contenido centrado, precios de **30 Bs** para estudiantes de la Facultad y **50 Bs** para público general, además de los beneficios incluidos. El botón **Inscribirme ahora** abre el modal de inscripción.
+
+El flujo permite seleccionar el tipo de participante, verificar el registro estudiantil cuando corresponde, registrar los datos y generar un QR de pago. La inscripción comienza con estado `pendiente_pago` y el webhook de Veripagos actualiza el estado del pago y de la inscripción.
 
 El footer prioriza el contacto mediante WhatsApp, GitHub y TikTok.
+
+## API y persistencia
+
+La aplicación utiliza Astro en modo `server` con `@astrojs/node` en modo
+standalone. Las rutas API delegan la lógica en los módulos de dominio,
+aplicación, infraestructura y presentación.
+
+### Rutas disponibles
+
+- `POST /api/inscripciones`: crea una inscripción.
+- `POST /api/estudiantes/verificar`: verifica un registro estudiantil.
+- `POST /api/pagos/crear`: crea un pago y solicita el QR.
+- `GET /api/pagos/estado/:id`: consulta el estado de un pago.
+- `POST /api/pagos/webhook`: recibe confirmaciones de Veripagos mediante
+  autenticación básica.
+
+### Base de datos
+
+Los scripts PostgreSQL de `database/` están organizados en cuatro pasos:
+
+1. Creación del esquema y extensiones requeridas.
+2. Tablas `inscripciones` y `pagos`.
+3. Claves, relaciones, estados, defaults, índices y RLS.
+4. Datos iniciales, actualmente sin catálogos ni registros operativos.
+
+Las credenciales y secretos deben configurarse mediante variables de entorno;
+no deben almacenarse en el repositorio.
 
 ## Instalación
 
@@ -165,7 +220,11 @@ git clone <url-del-repositorio>
 cd infosis-build
 corepack enable
 pnpm install
+cp .env.example .env
 ```
+
+Completa `.env` con las credenciales de Supabase, la consulta de estudiantes y
+Veripagos antes de utilizar las rutas API.
 
 ## Desarrollo
 
@@ -173,12 +232,13 @@ pnpm install
 pnpm dev
 ```
 
-La landing queda disponible en `http://localhost:4321`.
+La aplicación queda disponible en `http://localhost:4321`.
 
 ```bash
 pnpm dev      # Servidor de desarrollo
-pnpm build    # Compilación estática de producción
-pnpm preview  # Vista previa de la compilación
+pnpm check    # Validación de Astro y TypeScript
+pnpm build    # Compilación SSR de producción
+pnpm preview  # Vista previa de la aplicación
 ```
 
 ## Producción
@@ -187,7 +247,9 @@ pnpm preview  # Vista previa de la compilación
 pnpm build
 ```
 
-El resultado se genera en `dist/` y puede publicarse en cualquier hosting compatible con sitios estáticos.
+El resultado se genera en `dist/` y debe desplegarse en un entorno compatible
+con Node.js y ejecución SSR. Las variables de entorno deben configurarse en el
+proveedor de despliegue.
 
 ## Contenido y personalización
 

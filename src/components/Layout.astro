@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import BackToTop from "./BackToTop.astro";
-import RegistrationModal from "./RegistrationModal.astro";
+import ModalInscripcion from "./ModalInscripcion.astro";
 import { event } from "../data/event";
 
 const {
@@ -49,5 +49,5 @@ const socialImage = new URL(image, Astro.url);
     /><title>
       {title}
     </title></head
-  ><body><slot /><BackToTop /><RegistrationModal /></body>
+  ><body><slot /><BackToTop /><ModalInscripcion /></body>
 </html>

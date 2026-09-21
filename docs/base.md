@@ -2,9 +2,9 @@
 
 ## Estado actual
 
-Landing estática para **Infosis Build Fest 2026**, actividad presencial de la carrera de Ingeniería Informática y Sistemas de la Facultad Integral del Chaco.
+Aplicación web para **Infosis Build Fest 2026**, actividad presencial de la carrera de Ingeniería Informática y Sistemas de la Facultad Integral del Chaco. Incluye una landing pública y una API SSR para gestionar inscripciones, verificación de estudiantes y pagos.
 
-La interfaz utiliza contenido real del evento y mantiene una estética oscura, editorial y pixelada con componentes, animaciones y recursos propios.
+La interfaz utiliza contenido real del evento y mantiene una estética oscura, editorial y pixelada con componentes, animaciones y recursos propios. El backend se ejecuta bajo demanda con Astro y Node, y persiste la operación en PostgreSQL mediante Supabase.
 
 ## Información oficial
 
@@ -23,8 +23,11 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 
 ## Stack utilizado
 
-- **Astro** para generar la landing estática y optimizada para SEO.
-- **TypeScript** para la información central del evento y scripts.
+- **Astro** para la interfaz y las rutas API bajo demanda.
+- **Node.js** como adapter SSR en modo standalone.
+- **TypeScript** para la interfaz, dominio, casos de uso y scripts.
+- **Supabase** como cliente y persistencia PostgreSQL.
+- **Zod** para validar entradas HTTP.
 - **CSS** para layout, responsive, tokens visuales y componentes.
 - **Canvas** para la lluvia del cursor, la silueta institucional y la lluvia pixelada de las cards.
 - **GSAP** para la aparición animada de los bloques del título pixelado.
@@ -81,7 +84,10 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - Contenido centrado.
 - Precios visibles: **30 Bs** para estudiantes de la Facultad y **50 Bs** para público general.
 - Beneficios visibles: certificado de participación y refrigerio durante el segundo día.
-- CTA: **Inscribirme ahora**.
+- Formulario para registrar participantes estudiantes o de público general.
+- Verificación del registro estudiantil mediante el servicio de estudiantes.
+- Creación de la inscripción con estado inicial `pendiente_pago`.
+- Precios y datos enviados al backend según el tipo de participante.
 
 ### Footer
 
@@ -112,6 +118,33 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - Soporte para `prefers-reduced-motion`.
 - Skip link, focus visible, navegación por teclado y etiquetas ARIA.
 
+## Backend y persistencia
+
+La aplicación se ejecuta con salida `server` y adapter Node. Las rutas de
+Astro funcionan como adaptadores HTTP delgados y delegan la lógica en
+`src/modulos`.
+
+### Rutas implementadas
+
+- `POST /api/inscripciones`: crea y actualiza inscripciones.
+- `POST /api/estudiantes/verificar`: verifica un registro estudiantil.
+- `POST /api/pagos/crear`: crea un pago y solicita el QR a Veripagos.
+- `GET /api/pagos/estado/:id`: consulta el estado de un pago.
+- `POST /api/pagos/webhook`: procesa confirmaciones de la pasarela.
+
+### Modelo de datos
+
+La carpeta `database/` contiene los scripts PostgreSQL para Supabase:
+
+- `inscripciones`: identidad del participante, tipo, monto, estado y datos de
+  verificación.
+- `pagos`: inscripción relacionada, pasarela, referencia externa, monto,
+  estado y respuesta de confirmación.
+
+Las claves, relaciones, estados, montos, valores por defecto e índices están
+separados en `2.Restricciones.sql`. Las tablas tienen RLS habilitado y las
+operaciones del servidor utilizan la clave service role.
+
 ## Arquitectura actual
 
 ```text
@@ -133,7 +166,19 @@ src/
 ├── data/
 │   └── event.ts
 ├── pages/
-│   └── index.astro
+│   ├── index.astro
+│   └── api/
+│       ├── inscripciones.ts
+│       ├── estudiantes/verificar.ts
+│       └── pagos/
+│           ├── crear.ts
+│           ├── webhook.ts
+│           └── estado/[id].ts
+├── modulos/
+│   ├── dominio/
+│   ├── aplicacion/
+│   ├── infraestructura/
+│   └── presentacion/
 ├── scripts/
 │   ├── smooth-scroll.ts
 │   └── scroll-animations.ts
@@ -161,6 +206,7 @@ El contenido principal se mantiene en `src/data/event.ts`:
 - Tracks y herramientas.
 - Agenda.
 - Contactos y redes.
+- Variables de entorno de Supabase y Veripagos para el backend.
 
 ## Validación
 
