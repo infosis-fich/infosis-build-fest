@@ -8,6 +8,7 @@ import { esquemaInscripcion, esquemaVerificarCi } from "./esquemas";
 import { TokenVerificacionEstudiante } from "../aplicacion/estudiantes/TokenVerificacionEstudiante";
 import { ErrorAplicacion } from "../aplicacion/ErrorAplicacion";
 import type { RepositorioInscripciones } from "../dominio/inscripciones/RepositorioInscripciones";
+import type { Inscripcion } from "../dominio/inscripciones/Inscripcion";
 
 export class ControladorInscripciones {
   constructor(
@@ -15,6 +16,10 @@ export class ControladorInscripciones {
     private readonly tokenVerificacion: TokenVerificacionEstudiante,
     private readonly repositorioInscripciones: RepositorioInscripciones,
   ) {}
+
+  async listar(): Promise<Inscripcion[]> {
+    return this.repositorioInscripciones.listarTodas();
+  }
 
   async verificarCi(peticion: Request): Promise<Response> {
     try {

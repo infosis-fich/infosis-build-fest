@@ -294,6 +294,7 @@ nav a:hover,
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
+  cursor: pointer;
 }
 .button:hover {
   border-color: var(--violet);

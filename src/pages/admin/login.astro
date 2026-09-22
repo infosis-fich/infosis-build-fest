@@ -1,0 +1,119 @@
+---
+import Layout from "../../components/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import {
+  configuracionCookieSesion,
+  crearCookieSesion,
+  credencialesAdministrativasValidas,
+  nombreCookie,
+} from "../../modulos/infraestructura/http/AutenticacionAdministrativa";
+
+if (Astro.request.method === "POST") {
+  const formulario = await Astro.request.formData();
+  const usuario = String(formulario.get("usuario") ?? "");
+  const contrasena = String(formulario.get("contrasena") ?? "");
+
+  if (credencialesAdministrativasValidas(usuario, contrasena)) {
+    Astro.cookies.set(
+      nombreCookie,
+      crearCookieSesion(),
+      configuracionCookieSesion(),
+    );
+    return Astro.redirect("/admin/inscritos", 303);
+  }
+}
+
+const error = Astro.request.method === "POST";
+---
+
+<Layout
+  title="Acceso Consulta · Infosis Build Fest 2026"
+  description="Acceso privado a la consulta de inscritos de Infosis Build Fest 2026."
+  mostrarModal={false}
+>
+  <Navbar />
+  <main id="contenido" class="admin-auth-page">
+    <section class="auth-card modal-inscripcion__card">
+      <span class="modal-inscripcion__eyebrow">CONSULTA DE INSCRITOS</span>
+      <h2>Acceso Consulta</h2>
+
+      {
+        error && (
+          <p class="auth-error formulario-inscripcion__mensaje" role="alert">
+            Usuario o contraseña incorrectos.
+          </p>
+        )
+      }
+
+      <form class="formulario-inscripcion" method="post">
+        <label for="usuario">Usuario</label>
+        <input
+          id="usuario"
+          name="usuario"
+          type="text"
+          autocomplete="username"
+          required
+        />
+
+        <label for="contrasena">Contraseña</label>
+        <input
+          id="contrasena"
+          name="contrasena"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+
+        <button class="button primary" type="submit">Ingresar al panel</button>
+      </form>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  :global(*) {
+    box-sizing: border-box;
+  }
+  :global(body) {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .admin-auth-page {
+    display: grid;
+    min-height: 58vh;
+    place-items: center;
+    padding: clamp(4rem, 9vw, 7rem) var(--gutter);
+    background: #08080bcc;
+    backdrop-filter: blur(6px);
+  }
+  .auth-card {
+    width: min(32rem, calc(100% - 2rem));
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+    background: var(--surface-hover);
+    box-shadow: 0 1.5rem 4rem #0008;
+  }
+  .auth-card h2 {
+    margin: 1rem 0 0.75rem;
+    color: var(--text);
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+  .auth-card form {
+    margin-top: 1.5rem;
+  }
+  .auth-card .button {
+    width: 100%;
+  }
+  .auth-error {
+    border-left: 2px solid #c51d2a;
+    background: var(--surface);
+    color: var(--muted);
+    padding: 0.65rem 0.75rem;
+  }
+</style>
