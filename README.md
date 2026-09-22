@@ -11,7 +11,6 @@ Evento presencial de la carrera de Ingeniería Informática y Sistemas de la Fac
 ![Astro][astro-shield]
 ![TypeScript][typescript-shield]
 ![GSAP][gsap-shield]
-![Lenis][lenis-shield]
 ![simple-icons][icons-shield]
 
 </div>
@@ -287,5 +286,4 @@ Los estilos están en `src/styles/global.css` y `src/styles/enhancements.css`. L
 [astro-shield]: https://img.shields.io/badge/Astro-7-BC52EE?style=for-the-badge&logo=astro&logoColor=white
 [typescript-shield]: https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white
 [gsap-shield]: https://img.shields.io/badge/GSAP-3.15-88CE02?style=for-the-badge&logo=greensock&logoColor=white
-[lenis-shield]: https://img.shields.io/badge/Lenis-scroll-101014?style=for-the-badge
 [icons-shield]: https://img.shields.io/badge/simple--icons-16.31-111111?style=for-the-badge&logo=simpleicons&logoColor=white

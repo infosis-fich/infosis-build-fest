@@ -31,7 +31,7 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - **CSS** para layout, responsive, tokens visuales y componentes.
 - **Canvas** para la lluvia del cursor, la silueta institucional y la lluvia pixelada de las cards.
 - **GSAP** para la aparición animada de los bloques del título pixelado.
-- **Lenis** para scroll suave y navegación por anclas.
+- **Scroll nativo** mediante `scroll-behavior` y `scrollIntoView` para la navegación por anclas.
 - **simple-icons** para los logos reales de WhatsApp, GitHub y TikTok.
 
 ## Estructura de la landing
@@ -173,11 +173,15 @@ src/
 │   ├── Agenda.astro
 │   ├── FinalCta.astro
 │   ├── Footer.astro
-│   └── BackToTop.astro
+│   ├── BackToTop.astro
+│   ├── EntradaDigital.astro
+│   └── ModalInscripcion.astro
 ├── data/
 │   └── event.ts
 ├── pages/
 │   ├── index.astro
+│   ├── 404.astro
+│   ├── entrada/[token].astro
 │   └── api/
 │       ├── inscripciones.ts
 │       ├── estudiantes/verificar.ts
@@ -191,7 +195,7 @@ src/
 │   ├── infraestructura/
 │   └── presentacion/
 ├── scripts/
-│   ├── smooth-scroll.ts
+│   ├── navegacion.ts
 │   └── scroll-animations.ts
 └── styles/
     ├── global.css
@@ -204,6 +208,10 @@ src/
 - `ico-infosis.png`: versión original del logo.
 - `favicon.svg`: favicon pixelado de Infosis.
 - `favicon.ico`: favicon generado desde el logo institucional.
+
+La entrada pública valida el token antes de consultar la base de datos y solo
+acepta UUID v4 asociados a inscripciones con pago confirmado. La página `404.astro`
+ofrece únicamente el retorno al inicio.
 
 ## Datos editables
 
