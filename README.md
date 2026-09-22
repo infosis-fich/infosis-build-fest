@@ -73,7 +73,7 @@ La interfaz pública utiliza una estética oscura, editorial y pixelada, con com
 | Lenguaje         | TypeScript              |
 | Persistencia     | Supabase / PostgreSQL   |
 | Validación       | Zod                     |
-| Integración      | Veripagos y Caja UAGRM  |
+| Integración      | API oficial UAGRM y Veripagos |
 | Estilos          | CSS propio y responsive |
 | Animaciones      | GSAP                    |
 | Scroll           | Lenis                   |
@@ -148,7 +148,7 @@ src/
 ├── modulos/
 │   ├── dominio/              # Entidades y contratos
 │   ├── aplicacion/           # Casos de uso
-│   ├── infraestructura/      # Supabase, Caja UAGRM y Veripagos
+│   ├── infraestructura/      # Supabase, API UAGRM y Veripagos
 │   └── presentacion/          # Controladores y esquemas HTTP
 ├── scripts/
 │   ├── smooth-scroll.ts
@@ -223,8 +223,9 @@ pnpm install
 cp .env.example .env
 ```
 
-Completa `.env` con las credenciales de Supabase, la consulta de estudiantes y
-Veripagos antes de utilizar las rutas API.
+Completa `.env` con las credenciales de Supabase, la API oficial de estudiantes
+UAGRM y Veripagos antes de utilizar las rutas API. La API key de UAGRM se usa
+únicamente en el servidor.
 
 ## Desarrollo
 

@@ -12,9 +12,13 @@ function required(_name: string, value: string | undefined): string {
 
 export function obtenerEntorno() {
   return {
-    urlBaseCajaUagrm: required(
-      "UAGRM_CAJA_BASE_URL",
-      import.meta.env.UAGRM_CAJA_BASE_URL,
+    urlBaseEstudiantesUagrm: required(
+      "UAGRM_ESTUDIANTES_API_URL",
+      import.meta.env.UAGRM_ESTUDIANTES_API_URL,
+    ),
+    apiKeyEstudiantesUagrm: required(
+      "UAGRM_ESTUDIANTES_API_KEY",
+      import.meta.env.UAGRM_ESTUDIANTES_API_KEY,
     ),
     urlSupabase: required("SUPABASE_URL", import.meta.env.SUPABASE_URL),
     claveServicioSupabase: required(
