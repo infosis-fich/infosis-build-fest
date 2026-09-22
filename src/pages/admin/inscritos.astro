@@ -255,21 +255,22 @@ function estado(estadoInscripcion: string) {
     display: block;
     margin-top: 0.8rem;
     color: var(--violet);
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 600;
   }
   .table-card {
     overflow: hidden;
-    border: 1px solid var(--line);
-    border-radius: 0.7rem;
-    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: var(--surface-hover);
   }
   .table-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.25rem;
-    border-bottom: 1px solid #ffffff14;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--line);
   }
   .table-scroll {
     overflow-x: auto;
@@ -317,7 +318,7 @@ function estado(estadoInscripcion: string) {
     border-bottom: 1px solid #ffffff0e;
     text-align: left;
     overflow-wrap: anywhere;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
   }
   th {
     color: var(--violet);
@@ -379,9 +380,23 @@ function estado(estadoInscripcion: string) {
     font-size: 0.8rem;
   }
   @media (max-width: 560px) {
+    .admin-shell {
+      padding-block: 2rem;
+    }
     .admin-header {
       align-items: start;
       flex-direction: column;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .admin-header .button {
+      align-self: flex-start;
+      min-width: 10rem;
+    }
+    .summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1rem;
     }
     .summary article {
       min-height: 5.5rem;
@@ -391,7 +406,9 @@ function estado(estadoInscripcion: string) {
       font-size: 0.55rem;
     }
     .summary strong {
-      font-size: 0.85rem;
+      margin-top: 0.65rem;
+      font-size: 1rem;
+      line-height: 1.2;
     }
     .table-scroll {
       overflow-x: visible;
@@ -453,6 +470,30 @@ function estado(estadoInscripcion: string) {
     .table-heading {
       align-items: start;
       flex-direction: column;
+      padding: 1rem;
+    }
+    td[data-label="Participante"] strong {
+      display: block;
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+    .fecha-dato {
+      text-align: right;
+    }
+    .whatsapp-link {
+      max-width: 65%;
+      overflow-wrap: anywhere;
+    }
+  }
+  @media (max-width: 360px) {
+    .admin-shell {
+      padding-inline: 1rem;
+    }
+    .summary span {
+      font-size: 0.5rem;
+    }
+    .summary strong {
+      font-size: 0.9rem;
     }
   }
 </style>
