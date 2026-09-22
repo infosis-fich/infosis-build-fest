@@ -1,0 +1,13 @@
+---
+import {
+  configuracionCookieSesion,
+  nombreCookie,
+} from "../../modulos/infraestructura/http/AutenticacionAdministrativa";
+
+if (Astro.request.method === "POST") {
+  Astro.cookies.delete(nombreCookie, configuracionCookieSesion());
+  return Astro.redirect("/admin/login", 303);
+}
+
+return Astro.redirect("/admin/inscritos", 303);
+---

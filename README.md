@@ -58,6 +58,7 @@ La interfaz pública utiliza una estética oscura, editorial y pixelada, con com
 - Header sticky con navegación contextual: menú de secciones en la landing y logo, inicio y redes en páginas externas.
 - Footer enfocado únicamente en contacto.
 - Modal de inscripción con verificación de estudiantes y flujo de pago QR.
+- Panel de consulta de inscritos.
 - API SSR para inscripciones, estudiantes y pagos.
 - Scroll nativo suave, revelado al hacer scroll y botón para volver arriba.
 - Soporte para `prefers-reduced-motion` y navegación por teclado.
@@ -212,6 +213,8 @@ aplicación, infraestructura y presentación.
 - `POST /api/pagos/webhook`: recibe confirmaciones de Veripagos mediante
   autenticación básica.
 - `GET /entrada/:token`: valida una entrada digital pagada.
+- `GET /admin/login`: acceso visual al panel de consulta.
+- `GET /admin/inscritos`: consulta de inscritos.
 
 ### Base de datos
 
@@ -224,6 +227,14 @@ Los scripts PostgreSQL de `database/` están organizados en cuatro pasos:
 
 Las credenciales y secretos deben configurarse mediante variables de entorno;
 no deben almacenarse en el repositorio.
+
+### Panel consulta
+
+El panel está disponible en `/admin/inscritos` y utiliza una sesión
+segura basada en variables de entorno. Para habilitarlo se deben configurar
+`ADMIN_USERNAME`, `ADMIN_PASSWORD` y `ADMIN_SESSION_SECRET`. La vista es de
+solo lectura y muestra el listado completo, estados, tipos de participante,
+uso de laptop y resumen de recaudación.
 
 ## Instalación
 

@@ -19,9 +19,27 @@ interface InscripcionRow {
   lleva_laptop: boolean;
   monto_inscripcion: number;
   estado: EstadoInscripcion;
+  creado_en: string;
+  actualizado_en: string;
 }
 
 export class RepositorioInscripcionesSupabase implements RepositorioInscripciones {
+  async listarTodas(): Promise<Inscripcion[]> {
+    const { data, error } = await crearClienteSupabase()
+      .from("inscripciones")
+      .select()
+      .order("creado_en", { ascending: false });
+
+    if (error)
+      throw new ErrorAplicacion(
+        "ERROR_INTERNO",
+        "No se pudieron consultar las inscripciones.",
+        error,
+      );
+
+    return (data as InscripcionRow[]).map((row) => this.map(row));
+  }
+
   async crear(
     entrada: EntradaCrearInscripcion & {
       montoInscripcion: number;
@@ -212,6 +230,8 @@ export class RepositorioInscripcionesSupabase implements RepositorioInscripcione
       llevaLaptop: row.lleva_laptop,
       montoInscripcion: row.monto_inscripcion,
       estado: row.estado,
+      creadoEn: row.creado_en,
+      actualizadoEn: row.actualizado_en,
     };
   }
 }

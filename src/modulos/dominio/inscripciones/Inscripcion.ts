@@ -14,6 +14,8 @@ export interface Inscripcion {
   llevaLaptop: boolean;
   montoInscripcion: number;
   estado: EstadoInscripcion;
+  creadoEn: string;
+  actualizadoEn: string;
 }
 
 export interface EntradaCrearInscripcion {

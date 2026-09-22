@@ -8,6 +8,7 @@ const {
   title = `${event.title} · Inscríbete ahora`,
   description = event.seoDescription,
   image = "/portada.png",
+  mostrarModal = true,
 } = Astro.props;
 const canonical = Astro.site
   ? new URL(Astro.url.pathname, Astro.site)
@@ -49,7 +50,7 @@ const socialImage = new URL(image, Astro.url);
     /><title>
       {title}
     </title></head
-  ><body><slot /><BackToTop /><ModalInscripcion /></body>
+  ><body><slot /><BackToTop />{mostrarModal && <ModalInscripcion />}</body>
 </html>
 
 <script>

@@ -5,6 +5,7 @@ import type {
 } from "./Inscripcion";
 
 export interface RepositorioInscripciones {
+  listarTodas(): Promise<Inscripcion[]>;
   crear(
     entrada: EntradaCrearInscripcion & {
       montoInscripcion: number;
