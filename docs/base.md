@@ -127,7 +127,8 @@ Astro funcionan como adaptadores HTTP delgados y delegan la lógica en
 ### Rutas implementadas
 
 - `POST /api/inscripciones`: crea y actualiza inscripciones.
-- `POST /api/estudiantes/verificar`: verifica un registro estudiantil.
+- `POST /api/estudiantes/verificar`: verifica un registro estudiantil mediante
+  la API oficial de carnetización de la UAGRM.
 - `POST /api/pagos/crear`: crea un pago y solicita el QR a Veripagos.
 - `GET /api/pagos/estado/:id`: consulta el estado de un pago.
 - `POST /api/pagos/webhook`: procesa confirmaciones de la pasarela.

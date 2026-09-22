@@ -12,7 +12,7 @@ import { obtenerEntorno } from "./configuracion/entorno";
 import { PasarelaVeripagos } from "./pagos/PasarelaVeripagos";
 import { RepositorioPagosSupabase } from "./persistencia/RepositorioPagosSupabase";
 import { RepositorioInscripcionesSupabase } from "./persistencia/RepositorioInscripcionesSupabase";
-import { ClienteCajaUagrm } from "./estudiantes/ClienteCajaUagrm";
+import { ClienteApiEstudiantesUagrm } from "./estudiantes/ClienteApiEstudiantesUagrm";
 
 export function crearControladores() {
   const entorno = obtenerEntorno();
@@ -26,7 +26,10 @@ export function crearControladores() {
     contrasena: entorno.contrasenaVeripagos,
   });
   const verificadorEstudiante = new VerificarEstudiante(
-    new ClienteCajaUagrm({ urlBase: entorno.urlBaseCajaUagrm }),
+    new ClienteApiEstudiantesUagrm({
+      urlBase: entorno.urlBaseEstudiantesUagrm,
+      apiKey: entorno.apiKeyEstudiantesUagrm,
+    }),
   );
   const tokenVerificacion = new TokenVerificacionEstudiante(
     entorno.secretoVerificacionEstudiante,
