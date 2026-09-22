@@ -415,6 +415,24 @@ nav a:hover,
   align-items: center;
   gap: 0.45rem;
 }
+.footer__credit {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.footer__credit span {
+  color: var(--red, #c51d2a);
+}
+.footer__credit a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.2em;
+}
+.footer__credit a:hover {
+  color: var(--violet);
+  text-decoration-color: currentColor;
+}
 .footer-link__icon {
   display: inline-grid;
   width: 1.5rem;
