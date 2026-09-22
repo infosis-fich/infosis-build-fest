@@ -33,6 +33,10 @@ export class ControladorEstudiantes {
         tokenVerificacion: this.tokenVerificacion.firmar(estudiante),
         yaRegistrada: inscripcion?.estado === "pagada",
         estadoInscripcion: inscripcion?.estado ?? null,
+        entradaUrl:
+          inscripcion?.estado === "pagada"
+            ? `/entrada/${inscripcion.entradaToken}`
+            : null,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {

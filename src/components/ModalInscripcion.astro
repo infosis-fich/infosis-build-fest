@@ -1,5 +1,10 @@
+---
+import EntradaDigital from "./EntradaDigital.astro";
+---
+
 <dialog
   class="modal-inscripcion"
+  id="modal-inscripcion"
   data-modal-inscripcion
   aria-labelledby="titulo-inscripcion"
 >
@@ -194,6 +199,19 @@
           <p data-whatsapp-confirmacion>
             Te enviaremos más información a tu WhatsApp.
           </p>
+          <div
+            class="entrada-digital__modal"
+            aria-hidden="true"
+            style="position: fixed; top: -200vh; left: 0; width: 32rem; pointer-events: none;"
+          >
+            <EntradaDigital />
+          </div>
+          <a
+            class="button primary"
+            data-descargar-entrada
+            download="IBF2026-TOKEN.png"
+            hidden>Descargar entrada</a
+          >
         </div>
       </div>
     </section>
@@ -201,472 +219,537 @@
 </dialog>
 
 <script>
-  const modal = document.querySelector<HTMLDialogElement>(
-    "[data-modal-inscripcion]",
-  );
-  const disparadores = document.querySelectorAll<HTMLAnchorElement>(
-    "[data-disparador-inscripcion]",
-  );
-  const botonesCierre = modal?.querySelectorAll<HTMLButtonElement>(
-    "[data-cerrar-inscripcion]",
-  );
-  const pasos = modal?.querySelectorAll<HTMLElement>("[data-paso]");
-  const formulario = modal?.querySelector<HTMLFormElement>(
-    "[data-formulario-inscripcion]",
-  );
-  const seleccionadores = modal?.querySelectorAll<HTMLButtonElement>(
-    "[data-seleccionar-tipo]",
-  );
-  const botonVerificar = modal?.querySelector<HTMLButtonElement>(
-    "[data-verificar-estudiante]",
-  );
-  const botonCambiarTipo = modal?.querySelectorAll<HTMLButtonElement>(
-    "[data-cambiar-tipo]",
-  );
-  const registroConsulta = modal?.querySelector<HTMLInputElement>(
-    "[data-registro-consulta]",
-  );
-  const ciConsulta =
-    modal?.querySelector<HTMLInputElement>("[data-ci-consulta]");
-  const registroEstudiante = formulario?.querySelector<HTMLInputElement>(
-    "[data-registro-estudiante]",
-  );
-  const tokenVerificacion = formulario?.querySelector<HTMLInputElement>(
-    "[data-token-verificacion]",
-  );
-  const bloqueVerificacion = formulario?.querySelector<HTMLElement>(
-    "[data-bloque-verificacion]",
-  );
-  const bloqueVerificacionCi = formulario?.querySelector<HTMLElement>(
-    "[data-bloque-verificacion-ci]",
-  );
-  const camposDatos = formulario?.querySelector<HTMLElement>(
-    "[data-campos-datos]",
-  );
-  const tipoParticipante = formulario?.querySelector<HTMLInputElement>(
-    "[data-tipo-participante]",
-  );
-  const descripcionPaso = formulario?.querySelector<HTMLElement>(
-    "[data-descripcion-paso]",
-  );
-  const nombreCompleto = formulario?.querySelector<HTMLInputElement>(
-    "[data-nombre-completo]",
-  );
-  const ci = formulario?.querySelector<HTMLInputElement>("[data-ci]");
-  const mensajeEstudiante = modal?.querySelector<HTMLElement>(
-    "[data-mensaje-estudiante]",
-  );
-  const mensajeCi = modal?.querySelector<HTMLElement>("[data-mensaje-ci]");
-  const botonVerificarCi = modal?.querySelector<HTMLButtonElement>(
-    "[data-verificar-ci]",
-  );
-  const botonEnviar = formulario?.querySelector<HTMLButtonElement>(
-    "[data-enviar-inscripcion]",
-  );
-  const mensajeInscripcion = formulario?.querySelector<HTMLElement>(
-    "[data-mensaje-inscripcion]",
-  );
-  const pago = modal?.querySelector<HTMLElement>("[data-pago-inscripcion]");
-  const imagenQr = modal?.querySelector<HTMLImageElement>(
-    "[data-qr-inscripcion]",
-  );
-  const vistaQr = modal?.querySelector<HTMLElement>("[data-vista-qr]");
-  const vistaConfirmacion = modal?.querySelector<HTMLElement>(
-    "[data-vista-confirmacion]",
-  );
-  const tituloConfirmacion = modal?.querySelector<HTMLElement>(
-    "[data-titulo-confirmacion]",
-  );
-  const mensajeConfirmacion = modal?.querySelector<HTMLElement>(
-    "[data-mensaje-confirmacion]",
-  );
-  const nombreConfirmacion = modal?.querySelector<HTMLElement>(
-    "[data-nombre-confirmacion]",
-  );
-  const whatsappConfirmacion = modal?.querySelector<HTMLElement>(
-    "[data-whatsapp-confirmacion]",
-  );
-  const lluviaConfirmacion = modal?.querySelector<HTMLElement>(
-    ".confirmacion-inscripcion__lluvia",
-  );
-  const descargarQr = modal?.querySelector<HTMLAnchorElement>(
-    "[data-descargar-qr]",
-  );
-  const mensajePago = modal?.querySelector<HTMLElement>("[data-mensaje-pago]");
-  let temporizadorConsulta: number | undefined;
-  let tipoConfirmacion: "nuevo" | "existente" | "pagado" = "nuevo";
-  let confetiCreado = false;
+  import { toPng } from "html-to-image";
+  import QRCode from "qrcode";
 
-  const cambiarCarga = (boton: HTMLButtonElement, cargando: boolean) => {
-    boton.disabled = cargando;
-    boton.classList.toggle("is-loading", cargando);
-    boton.setAttribute("aria-busy", String(cargando));
-  };
-
-  const crearConfeti = () => {
-    if (!lluviaConfirmacion || confetiCreado) return;
-    const colores = ["var(--violet)", "var(--text)", "#ffffff"];
-    for (let indice = 0; indice < 72; indice += 1) {
-      const pieza = document.createElement("i");
-      pieza.style.setProperty("--pos", `${Math.random() * 100}`);
-      pieza.style.setProperty("--color", colores[indice % colores.length]);
-      pieza.style.setProperty("--rot", `${Math.random() * 80 - 40}deg`);
-      pieza.style.setProperty("--delay", `${1.15 + Math.random() * 1.5}s`);
-      pieza.style.animationDuration = `${2.2 + Math.random() * 2.4}s`;
-      pieza.style.width = `${0.2 + Math.random() * 0.25}rem`;
-      pieza.style.height = `${0.55 + Math.random() * 0.8}rem`;
-      lluviaConfirmacion.appendChild(pieza);
-    }
-    for (let indice = 0; indice < 36; indice += 1) {
-      const pieza = document.createElement("i");
-      const angulo = Math.random() * Math.PI * 2;
-      const distancia =
-        Math.hypot(window.innerWidth, window.innerHeight) *
-        (0.35 + Math.random() * 0.8);
-      pieza.className = "confeti-explosion";
-      pieza.style.setProperty("--x", `${Math.cos(angulo) * distancia}px`);
-      pieza.style.setProperty("--y", `${Math.sin(angulo) * distancia}px`);
-      pieza.style.setProperty("--color", colores[indice % colores.length]);
-      pieza.style.setProperty("--rot", `${Math.random() * 360}deg`);
-      pieza.style.animationDelay = `${Math.random() * 0.12}s`;
-      pieza.style.width = `${0.25 + Math.random() * 0.3}rem`;
-      pieza.style.height = `${0.6 + Math.random() * 0.9}rem`;
-      lluviaConfirmacion.appendChild(pieza);
-    }
-    confetiCreado = true;
-  };
-
-  const habilitarCamposDatos = (habilitar: boolean) => {
-    if (!camposDatos) return;
-    camposDatos.hidden = !habilitar;
-    camposDatos
-      .querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-        "input:not([type=hidden]), select",
-      )
-      .forEach((campo) => {
-        campo.disabled = !habilitar;
-      });
-    if (botonEnviar) botonEnviar.disabled = !habilitar;
-  };
-
-  const habilitarVerificacion = (habilitar: boolean) => {
-    if (!bloqueVerificacion) return;
-    bloqueVerificacion
-      .querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button")
-      .forEach((campo) => {
-        campo.disabled = !habilitar;
-      });
-  };
-
-  const habilitarVerificacionCi = (habilitar: boolean) => {
-    if (!bloqueVerificacionCi) return;
-    bloqueVerificacionCi
-      .querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button")
-      .forEach((campo) => {
-        campo.disabled = !habilitar;
-      });
-  };
-
-  const mostrarPaso = (nombre: string) => {
-    pasos?.forEach((paso) => {
-      paso.hidden = paso.dataset.paso !== nombre;
-    });
-  };
-
-  const reiniciar = () => {
-    formulario?.reset();
-    if (registroConsulta) registroConsulta.value = "";
-    if (ciConsulta) ciConsulta.value = "";
-    if (mensajeEstudiante) mensajeEstudiante.textContent = "";
-    if (mensajeCi) mensajeCi.textContent = "";
-    if (mensajeInscripcion) mensajeInscripcion.textContent = "";
-    if (mensajePago) mensajePago.textContent = "";
-    mensajePago?.classList.remove("pago-inscripcion__espera");
-    if (vistaQr) vistaQr.hidden = false;
-    if (vistaConfirmacion) vistaConfirmacion.hidden = true;
-    if (descargarQr) descargarQr.removeAttribute("href");
-    modal?.classList.remove("modal-inscripcion--confirmacion");
-    if (botonEnviar) {
-      botonEnviar.classList.remove("is-loading");
-      botonEnviar.setAttribute("aria-busy", "false");
-    }
-    tipoConfirmacion = "nuevo";
-    if (tituloConfirmacion)
-      tituloConfirmacion.textContent = "¡Registro exitoso!";
-    if (mensajeConfirmacion) {
-      mensajeConfirmacion.textContent =
-        "Has sido registrado exitosamente a la INFOSIS BUILD FEST 2026.";
-    }
-    if (temporizadorConsulta) window.clearInterval(temporizadorConsulta);
-    habilitarCamposDatos(false);
-    habilitarVerificacion(false);
-    if (bloqueVerificacion) bloqueVerificacion.hidden = true;
-    if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = true;
-    habilitarVerificacionCi(false);
-    mostrarPaso("seleccion");
-  };
-
-  seleccionadores?.forEach((boton) => {
-    boton.addEventListener("click", () => {
-      const tipo = boton.dataset.seleccionarTipo;
-      if (!tipo || !tipoParticipante) return;
-      tipoParticipante.value = tipo;
-      const esEstudiante = tipo === "estudiante";
-      if (descripcionPaso) {
-        descripcionPaso.textContent = esEstudiante
-          ? "Ingresa tu registro para verificar tu identidad como estudiante · 30 Bs."
-          : "Ingresa tu cédula para comprobar si ya tienes una inscripción · 50 Bs.";
-      }
-      if (nombreCompleto) nombreCompleto.readOnly = esEstudiante;
-      if (ci) ci.readOnly = esEstudiante;
-      if (!esEstudiante) {
-        if (registroEstudiante) registroEstudiante.value = "";
-        if (tokenVerificacion) tokenVerificacion.value = "";
-        if (registroConsulta) registroConsulta.value = "";
-      }
-      mostrarPaso("datos");
-      if (esEstudiante) {
-        if (bloqueVerificacion) bloqueVerificacion.hidden = false;
-        habilitarVerificacion(true);
-        habilitarCamposDatos(false);
-        registroConsulta?.focus();
-      } else {
-        if (bloqueVerificacion) bloqueVerificacion.hidden = true;
-        if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = false;
-        habilitarVerificacion(false);
-        habilitarVerificacionCi(true);
-        habilitarCamposDatos(false);
-        ciConsulta?.focus();
-      }
-    });
+  window.addEventListener("abrir-inscripcion", () => {
+    const modal =
+      document.querySelector<HTMLDialogElement>("#modal-inscripcion");
+    if (modal && !modal.open) modal.showModal();
   });
 
-  botonVerificar?.addEventListener("click", async () => {
-    if (
-      !registroConsulta ||
-      !botonVerificar ||
-      !mensajeEstudiante ||
-      !registroEstudiante ||
-      !nombreCompleto ||
-      !ci
-    )
-      return;
-    if (!/^\d{9}$/.test(registroConsulta.value.trim())) {
-      mensajeEstudiante.textContent =
-        "El registro debe tener exactamente 9 dígitos.";
-      return;
-    }
-    cambiarCarga(botonVerificar, true);
-    mensajeEstudiante.textContent = "Verificando registro…";
-    try {
-      const respuesta = await fetch("/api/estudiantes/verificar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          registroEstudiante: registroConsulta.value.trim(),
-        }),
+  const inicializarModal = () => {
+    const modal = document.querySelector<HTMLDialogElement>(
+      "[data-modal-inscripcion]",
+    );
+    const botonesCierre = modal?.querySelectorAll<HTMLButtonElement>(
+      "[data-cerrar-inscripcion]",
+    );
+    const pasos = modal?.querySelectorAll<HTMLElement>("[data-paso]");
+    const formulario = modal?.querySelector<HTMLFormElement>(
+      "[data-formulario-inscripcion]",
+    );
+    const seleccionadores = modal?.querySelectorAll<HTMLButtonElement>(
+      "[data-seleccionar-tipo]",
+    );
+    const botonVerificar = modal?.querySelector<HTMLButtonElement>(
+      "[data-verificar-estudiante]",
+    );
+    const botonCambiarTipo = modal?.querySelectorAll<HTMLButtonElement>(
+      "[data-cambiar-tipo]",
+    );
+    const registroConsulta = modal?.querySelector<HTMLInputElement>(
+      "[data-registro-consulta]",
+    );
+    const ciConsulta =
+      modal?.querySelector<HTMLInputElement>("[data-ci-consulta]");
+    const registroEstudiante = formulario?.querySelector<HTMLInputElement>(
+      "[data-registro-estudiante]",
+    );
+    const tokenVerificacion = formulario?.querySelector<HTMLInputElement>(
+      "[data-token-verificacion]",
+    );
+    const bloqueVerificacion = formulario?.querySelector<HTMLElement>(
+      "[data-bloque-verificacion]",
+    );
+    const bloqueVerificacionCi = formulario?.querySelector<HTMLElement>(
+      "[data-bloque-verificacion-ci]",
+    );
+    const camposDatos = formulario?.querySelector<HTMLElement>(
+      "[data-campos-datos]",
+    );
+    const tipoParticipante = formulario?.querySelector<HTMLInputElement>(
+      "[data-tipo-participante]",
+    );
+    const descripcionPaso = formulario?.querySelector<HTMLElement>(
+      "[data-descripcion-paso]",
+    );
+    const nombreCompleto = formulario?.querySelector<HTMLInputElement>(
+      "[data-nombre-completo]",
+    );
+    const ci = formulario?.querySelector<HTMLInputElement>("[data-ci]");
+    const mensajeEstudiante = modal?.querySelector<HTMLElement>(
+      "[data-mensaje-estudiante]",
+    );
+    const mensajeCi = modal?.querySelector<HTMLElement>("[data-mensaje-ci]");
+    const botonVerificarCi = modal?.querySelector<HTMLButtonElement>(
+      "[data-verificar-ci]",
+    );
+    const botonEnviar = formulario?.querySelector<HTMLButtonElement>(
+      "[data-enviar-inscripcion]",
+    );
+    const mensajeInscripcion = formulario?.querySelector<HTMLElement>(
+      "[data-mensaje-inscripcion]",
+    );
+    const pago = modal?.querySelector<HTMLElement>("[data-pago-inscripcion]");
+    const imagenQr = modal?.querySelector<HTMLImageElement>(
+      "[data-qr-inscripcion]",
+    );
+    const vistaQr = modal?.querySelector<HTMLElement>("[data-vista-qr]");
+    const vistaConfirmacion = modal?.querySelector<HTMLElement>(
+      "[data-vista-confirmacion]",
+    );
+    const tituloConfirmacion = modal?.querySelector<HTMLElement>(
+      "[data-titulo-confirmacion]",
+    );
+    const mensajeConfirmacion = modal?.querySelector<HTMLElement>(
+      "[data-mensaje-confirmacion]",
+    );
+    const nombreConfirmacion = modal?.querySelector<HTMLElement>(
+      "[data-nombre-confirmacion]",
+    );
+    const whatsappConfirmacion = modal?.querySelector<HTMLElement>(
+      "[data-whatsapp-confirmacion]",
+    );
+    const lluviaConfirmacion = modal?.querySelector<HTMLElement>(
+      ".confirmacion-inscripcion__lluvia",
+    );
+    const descargarQr = modal?.querySelector<HTMLAnchorElement>(
+      "[data-descargar-qr]",
+    );
+    const entradaDigital = modal?.querySelector<HTMLElement>(
+      "[data-entrada-digital]",
+    );
+    const entradaQr =
+      modal?.querySelector<HTMLImageElement>("[data-entrada-qr]");
+    const descargarEntrada = modal?.querySelector<HTMLAnchorElement>(
+      "[data-descargar-entrada]",
+    );
+    const mensajePago = modal?.querySelector<HTMLElement>(
+      "[data-mensaje-pago]",
+    );
+    let temporizadorConsulta: number | undefined;
+    let tipoConfirmacion: "nuevo" | "existente" | "pagado" = "nuevo";
+    let confetiCreado = false;
+
+    const prepararEntrada = async (entradaUrl: string | null | undefined) => {
+      if (!entradaUrl || !entradaDigital || !entradaQr || !descargarEntrada)
+        return;
+      try {
+        const url = new URL(entradaUrl, window.location.origin).toString();
+        const token = new URL(url).pathname.split("/").filter(Boolean).pop();
+        descargarEntrada.download = `IBF2026-${token || "TOKEN"}.png`;
+        entradaQr.src = await QRCode.toDataURL(url, {
+          errorCorrectionLevel: "H",
+          margin: 1,
+          width: 600,
+        });
+        await new Promise<void>((resolve) => {
+          if (entradaQr.complete) {
+            resolve();
+            return;
+          }
+          entradaQr.addEventListener("load", () => resolve(), { once: true });
+        });
+        await document.fonts.ready;
+        const imagen = await toPng(entradaDigital, {
+          cacheBust: true,
+          pixelRatio: 2,
+        });
+        descargarEntrada.href = imagen;
+        descargarEntrada.hidden = false;
+      } catch {
+        descargarEntrada.hidden = true;
+      }
+    };
+
+    const cambiarCarga = (boton: HTMLButtonElement, cargando: boolean) => {
+      boton.disabled = cargando;
+      boton.classList.toggle("is-loading", cargando);
+      boton.setAttribute("aria-busy", String(cargando));
+    };
+
+    const crearConfeti = () => {
+      if (!lluviaConfirmacion || confetiCreado) return;
+      const colores = ["var(--violet)", "var(--text)", "#ffffff"];
+      for (let indice = 0; indice < 72; indice += 1) {
+        const pieza = document.createElement("i");
+        pieza.style.setProperty("--pos", `${Math.random() * 100}`);
+        pieza.style.setProperty("--color", colores[indice % colores.length]);
+        pieza.style.setProperty("--rot", `${Math.random() * 80 - 40}deg`);
+        pieza.style.setProperty("--delay", `${1.15 + Math.random() * 1.5}s`);
+        pieza.style.animationDuration = `${2.2 + Math.random() * 2.4}s`;
+        pieza.style.width = `${0.2 + Math.random() * 0.25}rem`;
+        pieza.style.height = `${0.55 + Math.random() * 0.8}rem`;
+        lluviaConfirmacion.appendChild(pieza);
+      }
+      for (let indice = 0; indice < 36; indice += 1) {
+        const pieza = document.createElement("i");
+        const angulo = Math.random() * Math.PI * 2;
+        const distancia =
+          Math.hypot(window.innerWidth, window.innerHeight) *
+          (0.35 + Math.random() * 0.8);
+        pieza.className = "confeti-explosion";
+        pieza.style.setProperty("--x", `${Math.cos(angulo) * distancia}px`);
+        pieza.style.setProperty("--y", `${Math.sin(angulo) * distancia}px`);
+        pieza.style.setProperty("--color", colores[indice % colores.length]);
+        pieza.style.setProperty("--rot", `${Math.random() * 360}deg`);
+        pieza.style.animationDelay = `${Math.random() * 0.12}s`;
+        pieza.style.width = `${0.25 + Math.random() * 0.3}rem`;
+        pieza.style.height = `${0.6 + Math.random() * 0.9}rem`;
+        lluviaConfirmacion.appendChild(pieza);
+      }
+      confetiCreado = true;
+    };
+
+    const habilitarCamposDatos = (habilitar: boolean) => {
+      if (!camposDatos) return;
+      camposDatos.hidden = !habilitar;
+      camposDatos
+        .querySelectorAll<HTMLInputElement | HTMLSelectElement>(
+          "input:not([type=hidden]), select",
+        )
+        .forEach((campo) => {
+          campo.disabled = !habilitar;
+        });
+      if (botonEnviar) botonEnviar.disabled = !habilitar;
+    };
+
+    const habilitarVerificacion = (habilitar: boolean) => {
+      if (!bloqueVerificacion) return;
+      bloqueVerificacion
+        .querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button")
+        .forEach((campo) => {
+          campo.disabled = !habilitar;
+        });
+    };
+
+    const habilitarVerificacionCi = (habilitar: boolean) => {
+      if (!bloqueVerificacionCi) return;
+      bloqueVerificacionCi
+        .querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button")
+        .forEach((campo) => {
+          campo.disabled = !habilitar;
+        });
+    };
+
+    const mostrarPaso = (nombre: string) => {
+      pasos?.forEach((paso) => {
+        paso.hidden = paso.dataset.paso !== nombre;
       });
-      const datos = await respuesta.json();
-      if (!respuesta.ok)
-        throw new Error(datos.error || "No se pudo verificar el registro.");
-      registroEstudiante.value = datos.registro;
-      if (tokenVerificacion) tokenVerificacion.value = datos.tokenVerificacion;
-      nombreCompleto.value = datos.nombreCompleto;
-      ci.value = datos.ci;
-      if (datos.yaRegistrada) {
-        mostrarConfirmacion("pagado");
+    };
+
+    const reiniciar = () => {
+      formulario?.reset();
+      if (registroConsulta) registroConsulta.value = "";
+      if (ciConsulta) ciConsulta.value = "";
+      if (mensajeEstudiante) mensajeEstudiante.textContent = "";
+      if (mensajeCi) mensajeCi.textContent = "";
+      if (mensajeInscripcion) mensajeInscripcion.textContent = "";
+      if (mensajePago) mensajePago.textContent = "";
+      mensajePago?.classList.remove("pago-inscripcion__espera");
+      if (vistaQr) vistaQr.hidden = false;
+      if (vistaConfirmacion) vistaConfirmacion.hidden = true;
+      if (descargarQr) descargarQr.removeAttribute("href");
+      if (entradaQr) entradaQr.removeAttribute("src");
+      if (descargarEntrada) {
+        descargarEntrada.removeAttribute("href");
+        descargarEntrada.hidden = true;
+      }
+      modal?.classList.remove("modal-inscripcion--confirmacion");
+      if (botonEnviar) {
+        botonEnviar.classList.remove("is-loading");
+        botonEnviar.setAttribute("aria-busy", "false");
+      }
+      tipoConfirmacion = "nuevo";
+      if (tituloConfirmacion)
+        tituloConfirmacion.textContent = "¡Registro exitoso!";
+      if (mensajeConfirmacion) {
+        mensajeConfirmacion.textContent =
+          "Has sido registrado exitosamente a la INFOSIS BUILD FEST 2026.";
+      }
+      if (temporizadorConsulta) window.clearInterval(temporizadorConsulta);
+      habilitarCamposDatos(false);
+      habilitarVerificacion(false);
+      if (bloqueVerificacion) bloqueVerificacion.hidden = true;
+      if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = true;
+      habilitarVerificacionCi(false);
+      mostrarPaso("seleccion");
+    };
+
+    seleccionadores?.forEach((boton) => {
+      boton.addEventListener("click", () => {
+        const tipo = boton.dataset.seleccionarTipo;
+        if (!tipo || !tipoParticipante) return;
+        tipoParticipante.value = tipo;
+        const esEstudiante = tipo === "estudiante";
+        if (descripcionPaso) {
+          descripcionPaso.textContent = esEstudiante
+            ? "Ingresa tu registro para verificar tu identidad como estudiante · 30 Bs."
+            : "Ingresa tu cédula para comprobar si ya tienes una inscripción · 50 Bs.";
+        }
+        if (nombreCompleto) nombreCompleto.readOnly = esEstudiante;
+        if (ci) ci.readOnly = esEstudiante;
+        if (!esEstudiante) {
+          if (registroEstudiante) registroEstudiante.value = "";
+          if (tokenVerificacion) tokenVerificacion.value = "";
+          if (registroConsulta) registroConsulta.value = "";
+        }
+        mostrarPaso("datos");
+        if (esEstudiante) {
+          if (bloqueVerificacion) bloqueVerificacion.hidden = false;
+          habilitarVerificacion(true);
+          habilitarCamposDatos(false);
+          registroConsulta?.focus();
+        } else {
+          if (bloqueVerificacion) bloqueVerificacion.hidden = true;
+          if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = false;
+          habilitarVerificacion(false);
+          habilitarVerificacionCi(true);
+          habilitarCamposDatos(false);
+          ciConsulta?.focus();
+        }
+      });
+    });
+
+    botonVerificar?.addEventListener("click", async () => {
+      if (
+        !registroConsulta ||
+        !botonVerificar ||
+        !mensajeEstudiante ||
+        !registroEstudiante ||
+        !nombreCompleto ||
+        !ci
+      )
+        return;
+      if (!/^\d{9}$/.test(registroConsulta.value.trim())) {
+        mensajeEstudiante.textContent =
+          "El registro debe tener exactamente 9 dígitos.";
         return;
       }
-      mensajeEstudiante.textContent = "Registro validado correctamente.";
-      if (bloqueVerificacion) bloqueVerificacion.hidden = true;
-      habilitarVerificacion(false);
-      habilitarCamposDatos(true);
-      formulario
-        ?.querySelector<HTMLInputElement>('input[name="whatsapp"]')
-        ?.focus();
-    } catch (error) {
-      mensajeEstudiante.textContent =
-        error instanceof Error
-          ? error.message
-          : "No se pudo verificar el registro.";
-    } finally {
-      cambiarCarga(botonVerificar, false);
-    }
-  });
+      cambiarCarga(botonVerificar, true);
+      mensajeEstudiante.textContent = "Verificando registro…";
+      try {
+        const respuesta = await fetch("/api/estudiantes/verificar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            registroEstudiante: registroConsulta.value.trim(),
+          }),
+        });
+        const datos = await respuesta.json();
+        if (!respuesta.ok)
+          throw new Error(datos.error || "No se pudo verificar el registro.");
+        registroEstudiante.value = datos.registro;
+        if (tokenVerificacion)
+          tokenVerificacion.value = datos.tokenVerificacion;
+        nombreCompleto.value = datos.nombreCompleto;
+        ci.value = datos.ci;
+        if (datos.yaRegistrada) {
+          mostrarConfirmacion("pagado", datos.entradaUrl);
+          return;
+        }
+        mensajeEstudiante.textContent = "Registro validado correctamente.";
+        if (bloqueVerificacion) bloqueVerificacion.hidden = true;
+        habilitarVerificacion(false);
+        habilitarCamposDatos(true);
+        formulario
+          ?.querySelector<HTMLInputElement>('input[name="whatsapp"]')
+          ?.focus();
+      } catch (error) {
+        mensajeEstudiante.textContent =
+          error instanceof Error
+            ? error.message
+            : "No se pudo verificar el registro.";
+      } finally {
+        cambiarCarga(botonVerificar, false);
+      }
+    });
 
-  botonVerificarCi?.addEventListener("click", async () => {
-    if (!ciConsulta || !botonVerificarCi || !mensajeCi || !ci) return;
-    const valorCi = ciConsulta.value.trim();
-    if (valorCi.length < 4) {
-      mensajeCi.textContent = "Ingresa una cédula de identidad válida.";
-      return;
-    }
+    botonVerificarCi?.addEventListener("click", async () => {
+      if (!ciConsulta || !botonVerificarCi || !mensajeCi || !ci) return;
+      const valorCi = ciConsulta.value.trim();
+      if (valorCi.length < 4) {
+        mensajeCi.textContent = "Ingresa una cédula de identidad válida.";
+        return;
+      }
 
-    cambiarCarga(botonVerificarCi, true);
-    mensajeCi.textContent = "Comprobando inscripción…";
-    try {
-      const respuesta = await fetch("/api/inscripciones/verificar-ci", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ci: valorCi }),
-      });
-      const datos = await respuesta.json();
-      if (!respuesta.ok)
-        throw new Error(datos.error || "No se pudo verificar la cédula.");
-      if (datos.yaRegistrada) {
+      cambiarCarga(botonVerificarCi, true);
+      mensajeCi.textContent = "Comprobando inscripción…";
+      try {
+        const respuesta = await fetch("/api/inscripciones/verificar-ci", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ci: valorCi }),
+        });
+        const datos = await respuesta.json();
+        if (!respuesta.ok)
+          throw new Error(datos.error || "No se pudo verificar la cédula.");
+        if (datos.yaRegistrada) {
+          if (datos.nombreCompleto && nombreCompleto) {
+            nombreCompleto.value = datos.nombreCompleto;
+          }
+          mostrarConfirmacion("pagado", datos.entradaUrl);
+          return;
+        }
+
+        ci.value = valorCi;
         if (datos.nombreCompleto && nombreCompleto) {
           nombreCompleto.value = datos.nombreCompleto;
         }
-        mostrarConfirmacion("pagado");
+        ci.readOnly = true;
+        if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = true;
+        habilitarVerificacionCi(false);
+        habilitarCamposDatos(true);
+        nombreCompleto?.focus();
+      } catch (error) {
+        mensajeCi.textContent =
+          error instanceof Error
+            ? error.message
+            : "No se pudo verificar la cédula.";
+      } finally {
+        cambiarCarga(botonVerificarCi, false);
+      }
+    });
+
+    const mostrarConfirmacion = (
+      tipo: "nuevo" | "existente" | "pagado",
+      entradaUrl?: string | null,
+    ) => {
+      if (temporizadorConsulta) window.clearInterval(temporizadorConsulta);
+      crearConfeti();
+      modal?.classList.add("modal-inscripcion--confirmacion");
+      if (tituloConfirmacion) {
+        tituloConfirmacion.textContent =
+          tipo === "pagado"
+            ? "¡Ya estás registrado!"
+            : tipo === "existente"
+              ? "¡Registro confirmado!"
+              : "¡Registro exitoso!";
+      }
+      if (mensajeConfirmacion) {
+        mensajeConfirmacion.textContent =
+          tipo === "pagado"
+            ? "Tu registro para la INFOSIS BUILD FEST 2026 ya estaba confirmado."
+            : tipo === "existente"
+              ? "Tu inscripción ya existía y el pago fue confirmado para la INFOSIS BUILD FEST 2026."
+              : "Has sido registrado exitosamente a la INFOSIS BUILD FEST 2026.";
+      }
+      const nombre = nombreCompleto?.value.trim();
+      if (nombreConfirmacion) {
+        nombreConfirmacion.textContent = nombre
+          ? nombre.toLocaleUpperCase("es")
+          : "";
+      }
+      const whatsapp = formulario
+        ?.querySelector<HTMLInputElement>('input[name="whatsapp"]')
+        ?.value.trim();
+      if (whatsappConfirmacion) {
+        whatsappConfirmacion.textContent = whatsapp
+          ? `Te enviaremos más información a tu WhatsApp: ${whatsapp}.`
+          : "Te enviaremos más información a tu WhatsApp.";
+      }
+      if (vistaQr) vistaQr.hidden = true;
+      if (vistaConfirmacion) vistaConfirmacion.hidden = false;
+      mostrarPaso("pago");
+      void prepararEntrada(entradaUrl);
+    };
+
+    botonCambiarTipo?.forEach((boton) =>
+      boton.addEventListener("click", reiniciar),
+    );
+    window.addEventListener("abrir-inscripcion", () => {
+      if (!modal) return;
+      reiniciar();
+      if (!modal.open) modal.showModal();
+    });
+    botonesCierre?.forEach((boton) =>
+      boton.addEventListener("click", () => modal?.close()),
+    );
+
+    formulario?.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      if (
+        !botonEnviar ||
+        !mensajeInscripcion ||
+        !pago ||
+        !imagenQr ||
+        !mensajePago
+      )
         return;
-      }
+      cambiarCarga(botonEnviar, true);
+      mensajeInscripcion.textContent = "Registrando tus datos…";
+      try {
+        const respuestaInscripcion = await fetch("/api/inscripciones", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(Object.fromEntries(new FormData(formulario))),
+        });
+        const inscripcion = await respuestaInscripcion.json();
+        if (!respuestaInscripcion.ok)
+          throw new Error(
+            inscripcion.error || "No se pudo crear la inscripción.",
+          );
+        if (inscripcion.yaRegistrada) {
+          tipoConfirmacion = "pagado";
+          mostrarConfirmacion("pagado", inscripcion.entradaUrl);
+          return;
+        }
+        tipoConfirmacion =
+          inscripcion.estadoRegistro === "existente_pendiente"
+            ? "existente"
+            : "nuevo";
+        if (inscripcion.mensaje) {
+          mensajeInscripcion.textContent = inscripcion.mensaje;
+        }
 
-      ci.value = valorCi;
-      if (datos.nombreCompleto && nombreCompleto) {
-        nombreCompleto.value = datos.nombreCompleto;
-      }
-      ci.readOnly = true;
-      if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = true;
-      habilitarVerificacionCi(false);
-      habilitarCamposDatos(true);
-      nombreCompleto?.focus();
-    } catch (error) {
-      mensajeCi.textContent =
-        error instanceof Error
-          ? error.message
-          : "No se pudo verificar la cédula.";
-    } finally {
-      cambiarCarga(botonVerificarCi, false);
-    }
-  });
+        mensajeInscripcion.textContent = "Generando tu código QR…";
+        const respuestaPago = await fetch("/api/pagos/crear", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ inscripcionId: inscripcion.inscripcionId }),
+        });
+        const datosPago = await respuestaPago.json();
+        if (!respuestaPago.ok)
+          throw new Error(datosPago.error || "No se pudo generar el QR.");
 
-  const mostrarConfirmacion = (tipo: "nuevo" | "existente" | "pagado") => {
-    if (temporizadorConsulta) window.clearInterval(temporizadorConsulta);
-    crearConfeti();
-    modal?.classList.add("modal-inscripcion--confirmacion");
-    if (tituloConfirmacion) {
-      tituloConfirmacion.textContent =
-        tipo === "pagado"
-          ? "¡Ya estás registrado!"
-          : tipo === "existente"
-            ? "¡Registro confirmado!"
-            : "¡Registro exitoso!";
-    }
-    if (mensajeConfirmacion) {
-      mensajeConfirmacion.textContent =
-        tipo === "pagado"
-          ? "Tu registro para la INFOSIS BUILD FEST 2026 ya estaba confirmado."
-          : tipo === "existente"
-            ? "Tu inscripción ya existía y el pago fue confirmado para la INFOSIS BUILD FEST 2026."
-            : "Has sido registrado exitosamente a la INFOSIS BUILD FEST 2026.";
-    }
-    const nombre = nombreCompleto?.value.trim();
-    if (nombreConfirmacion) {
-      nombreConfirmacion.textContent = nombre
-        ? nombre.toLocaleUpperCase("es")
-        : "";
-    }
-    const whatsapp = formulario
-      ?.querySelector<HTMLInputElement>('input[name="whatsapp"]')
-      ?.value.trim();
-    if (whatsappConfirmacion) {
-      whatsappConfirmacion.textContent = whatsapp
-        ? `Te enviaremos más información a tu WhatsApp: ${whatsapp}.`
-        : "Te enviaremos más información a tu WhatsApp.";
-    }
-    if (vistaQr) vistaQr.hidden = true;
-    if (vistaConfirmacion) vistaConfirmacion.hidden = false;
-    mostrarPaso("pago");
+        imagenQr.src = datosPago.qr;
+        if (descargarQr) descargarQr.href = datosPago.qr;
+        pago.hidden = false;
+        mensajePago.textContent = `Monto a pagar: ${datosPago.monto} Bs. Esperando confirmación…`;
+        mensajePago.classList.add("pago-inscripcion__espera");
+        mostrarPaso("pago");
+        temporizadorConsulta = window.setInterval(async () => {
+          const respuestaEstado = await fetch(
+            `/api/pagos/estado/${datosPago.pagoId}`,
+          );
+          if (!respuestaEstado.ok) return;
+          const estadoPago = await respuestaEstado.json();
+          if (estadoPago.estado === "pagado") {
+            mostrarConfirmacion(tipoConfirmacion, estadoPago.entradaUrl);
+          }
+        }, 5000);
+      } catch (error) {
+        mensajeInscripcion.textContent =
+          error instanceof Error
+            ? error.message
+            : "No se pudo completar la inscripción.";
+        botonEnviar.disabled = false;
+        botonEnviar.classList.remove("is-loading");
+        botonEnviar.setAttribute("aria-busy", "false");
+      }
+    });
+
+    modal?.addEventListener("click", (evento) => {
+      if (evento.target === modal) modal.close();
+    });
   };
 
-  botonCambiarTipo?.forEach((boton) =>
-    boton.addEventListener("click", reiniciar),
-  );
-  disparadores.forEach((disparador) =>
-    disparador.addEventListener("click", (evento) => {
-      evento.preventDefault();
-      reiniciar();
-      modal?.showModal();
-    }),
-  );
-  botonesCierre?.forEach((boton) =>
-    boton.addEventListener("click", () => modal?.close()),
-  );
-
-  formulario?.addEventListener("submit", async (evento) => {
-    evento.preventDefault();
-    if (
-      !botonEnviar ||
-      !mensajeInscripcion ||
-      !pago ||
-      !imagenQr ||
-      !mensajePago
-    )
-      return;
-    cambiarCarga(botonEnviar, true);
-    mensajeInscripcion.textContent = "Registrando tus datos…";
-    try {
-      const respuestaInscripcion = await fetch("/api/inscripciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(new FormData(formulario))),
-      });
-      const inscripcion = await respuestaInscripcion.json();
-      if (!respuestaInscripcion.ok)
-        throw new Error(
-          inscripcion.error || "No se pudo crear la inscripción.",
-        );
-      if (inscripcion.yaRegistrada) {
-        tipoConfirmacion = "pagado";
-        mostrarConfirmacion("pagado");
-        return;
-      }
-      tipoConfirmacion =
-        inscripcion.estadoRegistro === "existente_pendiente"
-          ? "existente"
-          : "nuevo";
-      if (inscripcion.mensaje) {
-        mensajeInscripcion.textContent = inscripcion.mensaje;
-      }
-
-      mensajeInscripcion.textContent = "Generando tu código QR…";
-      const respuestaPago = await fetch("/api/pagos/crear", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inscripcionId: inscripcion.inscripcionId }),
-      });
-      const datosPago = await respuestaPago.json();
-      if (!respuestaPago.ok)
-        throw new Error(datosPago.error || "No se pudo generar el QR.");
-
-      imagenQr.src = datosPago.qr;
-      if (descargarQr) descargarQr.href = datosPago.qr;
-      pago.hidden = false;
-      mensajePago.textContent = `Monto a pagar: ${datosPago.monto} Bs. Esperando confirmación…`;
-      mensajePago.classList.add("pago-inscripcion__espera");
-      mostrarPaso("pago");
-      temporizadorConsulta = window.setInterval(async () => {
-        const respuestaEstado = await fetch(
-          `/api/pagos/estado/${datosPago.pagoId}`,
-        );
-        if (!respuestaEstado.ok) return;
-        const estadoPago = await respuestaEstado.json();
-        if (estadoPago.estado === "pagado") {
-          mostrarConfirmacion(tipoConfirmacion);
-        }
-      }, 5000);
-    } catch (error) {
-      mensajeInscripcion.textContent =
-        error instanceof Error
-          ? error.message
-          : "No se pudo completar la inscripción.";
-      botonEnviar.disabled = false;
-      botonEnviar.classList.remove("is-loading");
-      botonEnviar.setAttribute("aria-busy", "false");
-    }
-  });
-
-  modal?.addEventListener("click", (evento) => {
-    if (evento.target === modal) modal.close();
-  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializarModal, {
+      once: true,
+    });
+  } else {
+    inicializarModal();
+  }
 </script>

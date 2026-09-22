@@ -51,3 +51,8 @@ const socialImage = new URL(image, Astro.url);
     </title></head
   ><body><slot /><BackToTop /><ModalInscripcion /></body>
 </html>
+
+<script>
+  import { initNavegacionGlobal } from "../scripts/navegacion";
+  initNavegacionGlobal();
+</script>

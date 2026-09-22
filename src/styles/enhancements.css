@@ -501,6 +501,42 @@
   max-width: 28rem;
   padding: 2rem 1rem;
 }
+.entrada-digital__modal {
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  width: 32rem;
+  overflow: visible;
+  pointer-events: none;
+}
+.entrada-digital__modal .entrada-digital__divider {
+  display: block !important;
+  width: 100% !important;
+  height: 1px !important;
+  margin-top: 1.5rem !important;
+}
+.entrada-digital__modal .entrada-digital__organiza-titulo {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 1.25rem !important;
+  text-align: center !important;
+}
+.entrada-digital__modal .entrada-digital__organiza {
+  display: flex !important;
+  width: 100% !important;
+  margin: 0.5rem 0 0.75rem !important;
+  justify-content: center !important;
+}
+.entrada-digital__modal .entrada-digital__organiza .organizer strong {
+  display: flex !important;
+  flex-direction: column !important;
+  font-family: "JetBrains Mono", ui-monospace, monospace !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+}
+.confirmacion-inscripcion__contenido > [data-descargar-entrada] {
+  margin-top: 1.25rem;
+}
 .confirmacion-inscripcion__contenido h3 {
   margin: 0.75rem 0;
   color: var(--violet);

@@ -70,6 +70,7 @@ export function crearControladores() {
         entorno.usuarioVeripagos,
         entorno.contrasenaVeripagos,
       ),
+      repositorioInscripciones,
     ),
   };
 }

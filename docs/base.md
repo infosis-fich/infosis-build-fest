@@ -41,9 +41,9 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - Header sticky con fondo oscuro y borde inferior sutil.
 - Logo institucional monocromático.
 - Enlace **Inicio** junto al logo.
-- Navegación: Evento, Tecnología, Agenda y Participa.
-- Iconos oficiales de WhatsApp, GitHub y TikTok antes de **Inscribirme**.
-- Menú compacto para pantallas pequeñas.
+- En la landing: ¿Qué es?, Aprendizaje, Agenda y Participa.
+- En páginas externas: logo, Inicio y redes sociales.
+- Menú compacto de secciones únicamente en la landing.
 
 ### Hero
 
@@ -96,6 +96,14 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - Enlaces a GitHub y TikTok.
 - Iconos oficiales mediante `simple-icons`.
 
+### Entrada digital
+
+- La entrada se genera después de confirmar el pago.
+- Reutiliza `EntradaDigital.astro` y el diseño pixelado de la landing.
+- El QR apunta a `/entrada/[token]`.
+- El token debe tener formato UUID v4 y solo una inscripción `pagada` es válida.
+- La descarga usa el formato `IBF2026-TOKEN.png`.
+
 ## Lenguaje visual
 
 - Fondo oscuro y superficies casi negras.
@@ -112,7 +120,7 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - Revelado de secciones al entrar en viewport.
 - Lluvia pixelada en cards con Canvas.
 - Lluvia asociada al movimiento del cursor en hero e inscripción.
-- Scroll suave con Lenis.
+- Scroll nativo suave mediante `scroll-behavior` y `scrollIntoView`.
 - Botón para volver arriba.
 - `pointer-events: none` en capas decorativas para no bloquear contenido.
 - Soporte para `prefers-reduced-motion`.
@@ -129,9 +137,11 @@ Astro funcionan como adaptadores HTTP delgados y delegan la lógica en
 - `POST /api/inscripciones`: crea y actualiza inscripciones.
 - `POST /api/estudiantes/verificar`: verifica un registro estudiantil mediante
   la API oficial de carnetización de la UAGRM.
+- `POST /api/inscripciones/verificar-ci`: verifica el CI de participantes generales.
 - `POST /api/pagos/crear`: crea un pago y solicita el QR a Veripagos.
 - `GET /api/pagos/estado/:id`: consulta el estado de un pago.
 - `POST /api/pagos/webhook`: procesa confirmaciones de la pasarela.
+- `GET /entrada/:token`: valida una entrada digital pagada.
 
 ### Modelo de datos
 

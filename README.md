@@ -56,11 +56,11 @@ La interfaz pública utiliza una estética oscura, editorial y pixelada, con com
 - Cards con lluvia pixelada sutil.
 - Agenda organizada en dos cards, una por día.
 - CTA final centrado con ambos precios y beneficios visibles.
-- Header sticky con navegación, redes e inscripción.
+- Header sticky con navegación contextual: menú de secciones en la landing y logo, inicio y redes en páginas externas.
 - Footer enfocado únicamente en contacto.
 - Modal de inscripción con verificación de estudiantes y flujo de pago QR.
 - API SSR para inscripciones, estudiantes y pagos.
-- Scroll suave, revelado al hacer scroll y botón para volver arriba.
+- Scroll nativo suave, revelado al hacer scroll y botón para volver arriba.
 - Soporte para `prefers-reduced-motion` y navegación por teclado.
 - SEO básico, Open Graph, favicon e identidad institucional.
 
@@ -76,7 +76,7 @@ La interfaz pública utiliza una estética oscura, editorial y pixelada, con com
 | Integración      | API oficial UAGRM y Veripagos |
 | Estilos          | CSS propio y responsive |
 | Animaciones      | GSAP                    |
-| Scroll           | Lenis                   |
+| Scroll           | `scroll-behavior` y `scrollIntoView` |
 | Gráficos         | Canvas y SVG            |
 | Iconos de marcas | `simple-icons`          |
 | Package manager  | pnpm                    |
@@ -95,7 +95,7 @@ La paleta está basada en el logo institucional de Ingeniería Informática y Si
 | Celeste claro      | `#8fd0e9` | Iluminación y resaltados         |
 | Rojo institucional | `#c51d2a` | Acento puntual tomado del logo   |
 
-El logo pixelado del evento está en `public/evento.PNG` y el logo institucional en `public/ico-infosis.png`.
+El logo institucional usado por la interfaz está en `public/ico-infosis-transparent.png`. El título pixelado se genera con `PixelTitle.astro`.
 
 ## Arquitectura
 
@@ -105,7 +105,7 @@ Página Astro
   -> Navbar
   -> Hero y título pixelado
   -> Información del evento
-  -> Tecnología y herramientas
+  -> Aprendizaje y herramientas
   -> Agenda
   -> Inscripción
   -> Footer y contactos
@@ -122,7 +122,7 @@ API SSR
 ```text
 src/
 ├── components/
-│   ├── Navbar.astro          # Navegación, redes y CTA
+│   ├── Navbar.astro          # Navegación contextual y redes
 │   ├── Hero.astro            # Hero principal
 │   ├── PixelTitle.astro      # Título SVG pixelado
 │   ├── CursorRain.astro      # Lluvia asociada al cursor
@@ -134,10 +134,14 @@ src/
 │   ├── Agenda.astro          # Agenda por día
 │   ├── FinalCta.astro        # Inscripción final
 │   ├── Footer.astro          # Contacto y redes
-│   └── BackToTop.astro       # Retorno al inicio
+│   ├── BackToTop.astro       # Retorno al inicio
+│   ├── EntradaDigital.astro  # Entrada y QR verificable
+│   └── ModalInscripcion.astro # Registro, pago y descarga
 ├── data/event.ts             # Fuente de datos del evento
 ├── pages/
 │   ├── index.astro           # Página principal
+│   ├── 404.astro             # Página no encontrada
+│   └── entrada/[token].astro # Validación pública de entradas
 │   └── api/
 │       ├── inscripciones.ts
 │       ├── estudiantes/verificar.ts
@@ -151,7 +155,7 @@ src/
 │   ├── infraestructura/      # Supabase, API UAGRM y Veripagos
 │   └── presentacion/          # Controladores y esquemas HTTP
 ├── scripts/
-│   ├── smooth-scroll.ts
+│   ├── navegacion.ts
 │   └── scroll-animations.ts
 └── styles/
     ├── global.css
@@ -162,7 +166,7 @@ src/
 
 ### Header y hero
 
-El header presenta el logo institucional, los enlaces Inicio, Evento, Tecnología, Agenda y Participa, iconos oficiales de WhatsApp, GitHub y TikTok, y el botón Inscribirme.
+En la landing el header presenta Inicio, ¿Qué es?, Aprendizaje, Agenda y Participa. En páginas externas conserva el logo, Inicio y las redes sociales. Los IDs de sección son `#inicio`, `#que-es`, `#aprendizaje`, `#agenda` y `#participa`.
 
 El hero muestra fechas, modalidad, descripción, CTAs, título pixelado, silueta institucional y lluvia de cursor.
 
@@ -186,6 +190,13 @@ El flujo permite seleccionar el tipo de participante, verificar el registro estu
 
 El footer prioriza el contacto mediante WhatsApp, GitHub y TikTok.
 
+### Entrada digital
+
+Después de un pago confirmado se genera una entrada digital reutilizando el diseño
+pixelado de la landing. El QR apunta a `/entrada/[token]`, donde se valida un UUID
+de la inscripción y únicamente una inscripción pagada se considera válida. La
+descarga usa el formato `IBF2026-TOKEN.png`.
+
 ## API y persistencia
 
 La aplicación utiliza Astro en modo `server` con `@astrojs/vercel`. Las rutas
@@ -196,10 +207,12 @@ aplicación, infraestructura y presentación.
 
 - `POST /api/inscripciones`: crea una inscripción.
 - `POST /api/estudiantes/verificar`: verifica un registro estudiantil.
+- `POST /api/inscripciones/verificar-ci`: verifica el CI de participantes generales.
 - `POST /api/pagos/crear`: crea un pago y solicita el QR.
 - `GET /api/pagos/estado/:id`: consulta el estado de un pago.
 - `POST /api/pagos/webhook`: recibe confirmaciones de Veripagos mediante
   autenticación básica.
+- `GET /entrada/:token`: valida una entrada digital pagada.
 
 ### Base de datos
 

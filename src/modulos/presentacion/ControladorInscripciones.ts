@@ -27,6 +27,10 @@ export class ControladorInscripciones {
         yaRegistrada: inscripcion?.estado === "pagada",
         estadoInscripcion: inscripcion?.estado ?? null,
         nombreCompleto: inscripcion?.nombreCompleto ?? null,
+        entradaUrl:
+          inscripcion?.estado === "pagada"
+            ? `/entrada/${inscripcion.entradaToken}`
+            : null,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -87,6 +91,9 @@ export class ControladorInscripciones {
           moneda: "BOB",
           existente: resultado.existente,
           yaRegistrada,
+          entradaUrl: yaRegistrada
+            ? `/entrada/${inscripcion.entradaToken}`
+            : null,
           estadoRegistro: yaRegistrada
             ? "ya_pagado"
             : resultado.existente

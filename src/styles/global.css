@@ -25,7 +25,7 @@
   box-sizing: border-box;
 }
 html {
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
   scroll-padding-top: 5rem;
 }
 body {
@@ -530,10 +530,13 @@ nav a:hover,
     background: transparent;
   }
   .header-cta {
-    display: none;
+    display: inline-flex;
+    padding-inline: 0.65rem;
+    font-size: 0.7rem;
   }
   .header-socials {
-    display: none;
+    display: flex;
+    gap: 0.45rem;
   }
   .hero {
     padding-top: 3rem;
