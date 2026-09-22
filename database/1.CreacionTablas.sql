@@ -5,6 +5,7 @@
 -- Inscripciones de participantes del evento.
 create table public.inscripciones (
   id uuid not null,
+  entrada_token uuid not null,
   nombre_completo text not null,
   ci text not null,
   whatsapp text not null,

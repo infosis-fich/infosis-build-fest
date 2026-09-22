@@ -4,6 +4,7 @@ export type EstadoInscripcion = "pendiente_pago" | "pagada" | "cancelada";
 
 export interface Inscripcion {
   id: string;
+  entradaToken: string;
   nombreCompleto: string;
   ci: string;
   whatsapp: string;
