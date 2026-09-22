@@ -55,10 +55,12 @@ export function crearControladores() {
     inscripciones: new ControladorInscripciones(
       crearInscripcion,
       tokenVerificacion,
+      repositorioInscripciones,
     ),
     estudiantes: new ControladorEstudiantes(
       verificadorEstudiante,
       tokenVerificacion,
+      repositorioInscripciones,
     ),
     pagos: new ControladorPagos(
       crearPago,

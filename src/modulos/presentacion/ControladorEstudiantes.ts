@@ -6,11 +6,13 @@ import {
 } from "../../compartido/http/respuestaApi";
 import { esquemaVerificarEstudiante } from "./esquemas";
 import { TokenVerificacionEstudiante } from "../aplicacion/estudiantes/TokenVerificacionEstudiante";
+import type { RepositorioInscripciones } from "../dominio/inscripciones/RepositorioInscripciones";
 
 export class ControladorEstudiantes {
   constructor(
     private readonly verificarEstudiante: VerificarEstudiante,
     private readonly tokenVerificacion: TokenVerificacionEstudiante,
+    private readonly repositorioInscripciones: RepositorioInscripciones,
   ) {}
 
   async verificar(peticion: Request): Promise<Response> {
@@ -19,9 +21,18 @@ export class ControladorEstudiantes {
       const estudiante = await this.verificarEstudiante.ejecutar(
         entrada.registroEstudiante,
       );
+      const porRegistro =
+        await this.repositorioInscripciones.buscarPorRegistroEstudiante(
+          estudiante.registro,
+        );
+      const inscripcion =
+        porRegistro ??
+        (await this.repositorioInscripciones.buscarPorCi(estudiante.ci));
       return respuestaJson({
         ...estudiante,
         tokenVerificacion: this.tokenVerificacion.firmar(estudiante),
+        yaRegistrada: inscripcion?.estado === "pagada",
+        estadoInscripcion: inscripcion?.estado ?? null,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {

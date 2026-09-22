@@ -79,6 +79,30 @@
           </button>
         </div>
       </div>
+      <div data-bloque-verificacion-ci hidden>
+        <label>
+          Cédula de identidad
+          <input
+            data-ci-consulta
+            required
+            minlength="4"
+            maxlength="30"
+            autocomplete="off"
+          />
+        </label>
+        <p
+          class="formulario-inscripcion__mensaje"
+          data-mensaje-ci
+          role="status"
+        >
+        </p>
+        <div class="modal-inscripcion__actions">
+          <button type="button" class="button" data-cambiar-tipo>Volver</button>
+          <button type="button" class="button primary" data-verificar-ci>
+            Verificar cédula
+          </button>
+        </div>
+      </div>
       <div data-campos-datos hidden>
         <label>
           Nombre completo
@@ -202,6 +226,8 @@
   const registroConsulta = modal?.querySelector<HTMLInputElement>(
     "[data-registro-consulta]",
   );
+  const ciConsulta =
+    modal?.querySelector<HTMLInputElement>("[data-ci-consulta]");
   const registroEstudiante = formulario?.querySelector<HTMLInputElement>(
     "[data-registro-estudiante]",
   );
@@ -210,6 +236,9 @@
   );
   const bloqueVerificacion = formulario?.querySelector<HTMLElement>(
     "[data-bloque-verificacion]",
+  );
+  const bloqueVerificacionCi = formulario?.querySelector<HTMLElement>(
+    "[data-bloque-verificacion-ci]",
   );
   const camposDatos = formulario?.querySelector<HTMLElement>(
     "[data-campos-datos]",
@@ -226,6 +255,10 @@
   const ci = formulario?.querySelector<HTMLInputElement>("[data-ci]");
   const mensajeEstudiante = modal?.querySelector<HTMLElement>(
     "[data-mensaje-estudiante]",
+  );
+  const mensajeCi = modal?.querySelector<HTMLElement>("[data-mensaje-ci]");
+  const botonVerificarCi = modal?.querySelector<HTMLButtonElement>(
+    "[data-verificar-ci]",
   );
   const botonEnviar = formulario?.querySelector<HTMLButtonElement>(
     "[data-enviar-inscripcion]",
@@ -325,6 +358,15 @@
       });
   };
 
+  const habilitarVerificacionCi = (habilitar: boolean) => {
+    if (!bloqueVerificacionCi) return;
+    bloqueVerificacionCi
+      .querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button")
+      .forEach((campo) => {
+        campo.disabled = !habilitar;
+      });
+  };
+
   const mostrarPaso = (nombre: string) => {
     pasos?.forEach((paso) => {
       paso.hidden = paso.dataset.paso !== nombre;
@@ -334,7 +376,9 @@
   const reiniciar = () => {
     formulario?.reset();
     if (registroConsulta) registroConsulta.value = "";
+    if (ciConsulta) ciConsulta.value = "";
     if (mensajeEstudiante) mensajeEstudiante.textContent = "";
+    if (mensajeCi) mensajeCi.textContent = "";
     if (mensajeInscripcion) mensajeInscripcion.textContent = "";
     if (mensajePago) mensajePago.textContent = "";
     mensajePago?.classList.remove("pago-inscripcion__espera");
@@ -357,6 +401,8 @@
     habilitarCamposDatos(false);
     habilitarVerificacion(false);
     if (bloqueVerificacion) bloqueVerificacion.hidden = true;
+    if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = true;
+    habilitarVerificacionCi(false);
     mostrarPaso("seleccion");
   };
 
@@ -369,7 +415,7 @@
       if (descripcionPaso) {
         descripcionPaso.textContent = esEstudiante
           ? "Ingresa tu registro para verificar tu identidad como estudiante · 30 Bs."
-          : "Completa tus datos para registrarte como público general · 50 Bs.";
+          : "Ingresa tu cédula para comprobar si ya tienes una inscripción · 50 Bs.";
       }
       if (nombreCompleto) nombreCompleto.readOnly = esEstudiante;
       if (ci) ci.readOnly = esEstudiante;
@@ -386,9 +432,11 @@
         registroConsulta?.focus();
       } else {
         if (bloqueVerificacion) bloqueVerificacion.hidden = true;
+        if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = false;
         habilitarVerificacion(false);
-        habilitarCamposDatos(true);
-        nombreCompleto?.focus();
+        habilitarVerificacionCi(true);
+        habilitarCamposDatos(false);
+        ciConsulta?.focus();
       }
     });
   });
@@ -425,6 +473,10 @@
       if (tokenVerificacion) tokenVerificacion.value = datos.tokenVerificacion;
       nombreCompleto.value = datos.nombreCompleto;
       ci.value = datos.ci;
+      if (datos.yaRegistrada) {
+        mostrarConfirmacion("pagado");
+        return;
+      }
       mensajeEstudiante.textContent = "Registro validado correctamente.";
       if (bloqueVerificacion) bloqueVerificacion.hidden = true;
       habilitarVerificacion(false);
@@ -439,6 +491,52 @@
           : "No se pudo verificar el registro.";
     } finally {
       cambiarCarga(botonVerificar, false);
+    }
+  });
+
+  botonVerificarCi?.addEventListener("click", async () => {
+    if (!ciConsulta || !botonVerificarCi || !mensajeCi || !ci) return;
+    const valorCi = ciConsulta.value.trim();
+    if (valorCi.length < 4) {
+      mensajeCi.textContent = "Ingresa una cédula de identidad válida.";
+      return;
+    }
+
+    cambiarCarga(botonVerificarCi, true);
+    mensajeCi.textContent = "Comprobando inscripción…";
+    try {
+      const respuesta = await fetch("/api/inscripciones/verificar-ci", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ci: valorCi }),
+      });
+      const datos = await respuesta.json();
+      if (!respuesta.ok)
+        throw new Error(datos.error || "No se pudo verificar la cédula.");
+      if (datos.yaRegistrada) {
+        if (datos.nombreCompleto && nombreCompleto) {
+          nombreCompleto.value = datos.nombreCompleto;
+        }
+        mostrarConfirmacion("pagado");
+        return;
+      }
+
+      ci.value = valorCi;
+      if (datos.nombreCompleto && nombreCompleto) {
+        nombreCompleto.value = datos.nombreCompleto;
+      }
+      ci.readOnly = true;
+      if (bloqueVerificacionCi) bloqueVerificacionCi.hidden = true;
+      habilitarVerificacionCi(false);
+      habilitarCamposDatos(true);
+      nombreCompleto?.focus();
+    } catch (error) {
+      mensajeCi.textContent =
+        error instanceof Error
+          ? error.message
+          : "No se pudo verificar la cédula.";
+    } finally {
+      cambiarCarga(botonVerificarCi, false);
     }
   });
 

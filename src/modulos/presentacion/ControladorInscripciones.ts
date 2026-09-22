@@ -4,15 +4,40 @@ import {
   manejarError,
   respuestaJson,
 } from "../../compartido/http/respuestaApi";
-import { esquemaInscripcion } from "./esquemas";
+import { esquemaInscripcion, esquemaVerificarCi } from "./esquemas";
 import { TokenVerificacionEstudiante } from "../aplicacion/estudiantes/TokenVerificacionEstudiante";
 import { ErrorAplicacion } from "../aplicacion/ErrorAplicacion";
+import type { RepositorioInscripciones } from "../dominio/inscripciones/RepositorioInscripciones";
 
 export class ControladorInscripciones {
   constructor(
     private readonly crearInscripcion: CrearInscripcion,
     private readonly tokenVerificacion: TokenVerificacionEstudiante,
+    private readonly repositorioInscripciones: RepositorioInscripciones,
   ) {}
+
+  async verificarCi(peticion: Request): Promise<Response> {
+    try {
+      const entrada = esquemaVerificarCi.parse(await peticion.json());
+      const inscripcion = await this.repositorioInscripciones.buscarPorCi(
+        entrada.ci,
+      );
+
+      return respuestaJson({
+        yaRegistrada: inscripcion?.estado === "pagada",
+        estadoInscripcion: inscripcion?.estado ?? null,
+        nombreCompleto: inscripcion?.nombreCompleto ?? null,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return respuestaJson(
+          { error: "La cédula de identidad no es válida." },
+          400,
+        );
+      }
+      return manejarError(error);
+    }
+  }
 
   async crear(peticion: Request): Promise<Response> {
     try {
