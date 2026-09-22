@@ -1,0 +1,85 @@
+---
+import Layout from "../components/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="Página no encontrada · Infosis Build Fest 2026"
+  description="La página que buscas no existe en Infosis Build Fest 2026."
+>
+  <Navbar />
+  <main class="pagina-no-encontrada" id="contenido">
+    <section
+      class="pagina-no-encontrada__contenido"
+      aria-labelledby="titulo-404"
+    >
+      <p class="pagina-no-encontrada__estado">404 · RUTA NO ENCONTRADA</p>
+      <h1 id="titulo-404">Esta página no existe.</h1>
+      <p class="pagina-no-encontrada__mensaje">
+        El enlace puede estar incompleto o ya no estar disponible. Vuelve al
+        inicio para continuar explorando el evento.
+      </p>
+      <div class="pagina-no-encontrada__acciones">
+        <a class="button primary" href="/">← Volver al inicio</a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .pagina-no-encontrada {
+    display: grid;
+    min-height: calc(100vh - 8rem);
+    place-items: center;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  .pagina-no-encontrada__contenido {
+    width: min(100%, 42rem);
+    padding: clamp(4rem, 10vw, 8rem) var(--gutter);
+  }
+
+  .pagina-no-encontrada__estado {
+    margin: 0 0 1.5rem;
+    color: var(--violet);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .pagina-no-encontrada h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 400;
+    line-height: 1.05;
+  }
+
+  .pagina-no-encontrada__mensaje {
+    max-width: 52ch;
+    margin: 1.5rem 0 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .pagina-no-encontrada__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 520px) {
+    .pagina-no-encontrada__acciones {
+      flex-direction: column;
+    }
+
+    .pagina-no-encontrada__acciones .button {
+      width: 100%;
+    }
+  }
+</style>

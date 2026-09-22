@@ -1,4 +1,10 @@
 ---
+interface Props {
+  animated?: boolean;
+}
+
+const { animated = true } = Astro.props;
+
 const patterns: Record<string, string[]> = {
   B: ["110", "101", "110", "101", "110"],
   D: ["110", "101", "101", "101", "110"],
@@ -76,7 +82,7 @@ const mainPixels = pixelsFor(mainTitle);
 const festPixels = pixelsFor(secondaryTitle);
 ---
 
-<h1 class="pixel-title">
+<h1 class="pixel-title" data-pixel-title data-pixel-animated={animated}>
   <span class="sr-only">Infosis Build Fest 2026</span>
   <svg
     class="pixel-title__svg"
@@ -129,21 +135,44 @@ const festPixels = pixelsFor(secondaryTitle);
 <script>
   import { gsap } from "gsap";
 
-  const pixels = document.querySelectorAll<SVGRectElement>("[data-pixel]");
+  const titles = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-pixel-title]"),
+  );
+  const pixels = Array.from(titles).flatMap((title) =>
+    Array.from(title.querySelectorAll<SVGRectElement>("[data-pixel]")),
+  );
+  const staticPixels = titles
+    .filter((title) => title.dataset.pixelAnimated === "false")
+    .flatMap((title) =>
+      Array.from(title.querySelectorAll<SVGRectElement>("[data-pixel]")),
+    );
+  const animatedPixels = pixels.filter(
+    (pixel) => !staticPixels.includes(pixel),
+  );
   const reducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
 
   if (reducedMotion) {
     gsap.set(pixels, { opacity: 1, scale: 1, y: 0 });
+  } else if (staticPixels.length > 0) {
+    gsap.set(staticPixels, { opacity: 1, scale: 1, y: 0 });
+    gsap.set(animatedPixels, { opacity: 0, scale: 0.72, y: 0 });
+    gsap.to(animatedPixels, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.3,
+      stagger: { each: 0.008, from: "random" },
+      ease: "power2.out",
+    });
   } else {
-    gsap.set(pixels, {
+    gsap.set(animatedPixels, {
       opacity: 0,
       scale: 0.72,
       y: () => gsap.utils.random(-18, 18),
       transformOrigin: "center",
     });
-    gsap.to(pixels, {
+    gsap.to(animatedPixels, {
       opacity: 1,
       scale: 1,
       y: 0,
@@ -152,7 +181,7 @@ const festPixels = pixelsFor(secondaryTitle);
       ease: "power2.out",
     });
 
-    pixels.forEach((pixel, index) => {
+    animatedPixels.forEach((pixel, index) => {
       const svg = pixel.ownerSVGElement;
       const parent = pixel.parentElement;
       if (!svg || !parent) return;
@@ -161,7 +190,7 @@ const festPixels = pixelsFor(secondaryTitle);
       const y = Number(pixel.getAttribute("y") || 0);
       const width = Number(pixel.getAttribute("width") || 16);
       const height = Number(pixel.getAttribute("height") || 16);
-       const fill = pixel.getAttribute("fill") || "#c9e9f5";
+      const fill = pixel.getAttribute("fill") || "#c9e9f5";
 
       for (let particleIndex = 0; particleIndex < 3; particleIndex += 1) {
         const particle = document.createElementNS(

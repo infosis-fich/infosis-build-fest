@@ -59,6 +59,10 @@ export const esquemaVerificarEstudiante = z.object({
     .regex(/^\d{9}$/, "Debe tener 9 dígitos."),
 });
 
+export const esquemaVerificarCi = z.object({
+  ci: z.string().trim().min(4).max(30),
+});
+
 export const esquemaWebhook = z.object({
   movimiento_id: z.coerce.number().int().positive(),
   monto: z.coerce.number().positive(),

@@ -1,0 +1,105 @@
+---
+import Layout from "../../components/Layout.astro";
+import EntradaDigital from "../../components/EntradaDigital.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import QRCode from "qrcode";
+import { RepositorioInscripcionesSupabase } from "../../modulos/infraestructura/persistencia/RepositorioInscripcionesSupabase";
+
+export const prerender = false;
+
+const token = Astro.params.token ?? "";
+const formatoTokenValido =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const tokenNormalizado = token.toLowerCase();
+const tokenValido = formatoTokenValido.test(tokenNormalizado);
+const inscripcion = tokenValido
+  ? await new RepositorioInscripcionesSupabase().buscarPorEntradaToken(
+      tokenNormalizado,
+    )
+  : null;
+const valida = inscripcion?.estado === "pagada";
+const urlVerificacion = new URL(
+  `/entrada/${tokenNormalizado}`,
+  Astro.url,
+).toString();
+const qrDataUrl = valida
+  ? await QRCode.toDataURL(urlVerificacion, {
+      errorCorrectionLevel: "H",
+      margin: 1,
+      width: 600,
+    })
+  : "";
+---
+
+<Layout
+  title="Entrada digital · Infosis Build Fest 2026"
+  description="Entrada digital verificable de la Infosis Build Fest 2026."
+>
+  <Navbar />
+  <main class="entrada-verificacion">
+    {
+      valida ? (
+        <>
+          <p class="entrada-verificacion__estado">ENTRADA VÁLIDA</p>
+          <h1>{inscripcion?.nombreCompleto}</h1>
+          <EntradaDigital qrUrl={urlVerificacion} qrDataUrl={qrDataUrl} />
+          <p class="entrada-verificacion__nota">
+            Presenta esta entrada al ingresar al evento.
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="entrada-verificacion__estado entrada-verificacion__estado--invalid">
+            ENTRADA NO VÁLIDA
+          </p>
+          <h1>No pudimos validar esta entrada</h1>
+          <p class="entrada-verificacion__nota">
+            El enlace no existe o la inscripción todavía no está pagada.
+          </p>
+        </>
+      )
+    }
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .entrada-verificacion {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: clamp(3.5rem, 8vw, 6rem) var(--gutter);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    text-align: center;
+  }
+  .entrada-verificacion h1 {
+    max-width: 34rem;
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(1.5rem, 4.2vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .entrada-verificacion__estado {
+    margin: 0;
+    color: var(--violet);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .entrada-verificacion__estado--invalid {
+    color: var(--muted);
+  }
+  .entrada-verificacion__nota {
+    max-width: 48ch;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+</style>

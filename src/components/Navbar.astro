@@ -1,12 +1,17 @@
 ---
 import { siGithub, siTiktok, siWhatsapp } from "simple-icons";
 import { event } from "../data/event";
+
+const esInicio = Astro.url.pathname === "/";
 ---
 
 <a class="skip" href="#contenido">Saltar al contenido</a>
 <header class="site-header">
   <div class="shell nav-inner">
-    <a class="brand" href="#top" aria-label="Infosis Build Fest, inicio"
+    <a
+      class="brand"
+      href={esInicio ? "#inicio" : "/"}
+      aria-label="Infosis Build Fest, inicio"
       ><img
         class="brand-logo"
         src="/ico-infosis-transparent.png"
@@ -15,52 +20,70 @@ import { event } from "../data/event";
         height="34"
       /></a
     >
-    <a class="brand-home" href="#top">Inicio</a>
-    <button
-      class="menu-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-controls="main-navigation"
-    >
-      <span class="sr-only">Abrir menú</span><span aria-hidden="true">☰</span>
-    </button>
-    <nav id="main-navigation" aria-label="Navegación principal">
-      <a href="#evento">Evento</a><a href="#herramientas">Tecnología</a><a
-        href="#agenda">Agenda</a
-      ><a href="#inscripcion">Participa</a>
-    </nav>
-    <div class="header-socials" aria-label="Contacto y redes">
-      <a
-        href={event.contact.whatsapp}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Más información por WhatsApp"
-        ><svg viewBox="0 0 24 24" aria-hidden="true"
-          ><path d={siWhatsapp.path}></path></svg
-        ></a
-      >
-      <a
-        href={event.contact.github}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="GitHub de Infosis"
-        ><svg viewBox="0 0 24 24" aria-hidden="true"
-          ><path d={siGithub.path}></path></svg
-        ></a
-      >
-      <a
-        href={event.contact.tiktok}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="TikTok de Infosis"
-        ><svg viewBox="0 0 24 24" aria-hidden="true"
-          ><path d={siTiktok.path}></path></svg
-        ></a
-      >
-    </div>
-    <a class="header-cta" href="#inscripcion" data-disparador-inscripcion
-      >Inscribirme <span>↗</span></a
-    >
+    <a class="brand-home" href={esInicio ? "#inicio" : "/"}>Inicio</a>
+    {
+      esInicio && (
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="main-navigation"
+        >
+          <>
+            <span class="sr-only">Abrir menú</span>
+            <span aria-hidden="true">☰</span>
+          </>
+        </button>
+      )
+    }
+    {
+      esInicio && (
+        <nav id="main-navigation" aria-label="Navegación principal">
+          <>
+            <a href="#que-es">¿Qué es?</a>
+            <a href="#aprendizaje">Aprendizaje</a>
+            <a href="#agenda">Agenda</a>
+            <a href="#participa">Participa</a>
+          </>
+        </nav>
+      )
+    }
+    {
+      !esInicio && (
+        <div class="header-socials" aria-label="Contacto y redes">
+          <a
+            href={event.contact.whatsapp}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Más información por WhatsApp"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d={siWhatsapp.path} />
+            </svg>
+          </a>
+          <a
+            href={event.contact.github}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub de Infosis"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d={siGithub.path} />
+            </svg>
+          </a>
+          <a
+            href={event.contact.tiktok}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="TikTok de Infosis"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d={siTiktok.path} />
+            </svg>
+          </a>
+        </div>
+      )
+    }
   </div>
 </header>
 <script>

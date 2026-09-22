@@ -14,6 +14,7 @@ export interface RepositorioInscripciones {
   buscarPorId(id: string): Promise<Inscripcion | null>;
   buscarPorCi(ci: string): Promise<Inscripcion | null>;
   buscarPorRegistroEstudiante(registro: string): Promise<Inscripcion | null>;
+  buscarPorEntradaToken(token: string): Promise<Inscripcion | null>;
   actualizarComoEstudiante(
     id: string,
     datos: {

@@ -9,6 +9,7 @@ import { crearClienteSupabase } from "./clienteSupabase";
 
 interface InscripcionRow {
   id: string;
+  entrada_token: string;
   nombre_completo: string;
   ci: string;
   whatsapp: string;
@@ -100,6 +101,21 @@ export class RepositorioInscripcionesSupabase implements RepositorioInscripcione
     return data ? this.map(data as InscripcionRow) : null;
   }
 
+  async buscarPorEntradaToken(token: string): Promise<Inscripcion | null> {
+    const { data, error } = await crearClienteSupabase()
+      .from("inscripciones")
+      .select()
+      .eq("entrada_token", token)
+      .maybeSingle();
+    if (error)
+      throw new ErrorAplicacion(
+        "ERROR_INTERNO",
+        "No se pudo consultar la entrada.",
+        error,
+      );
+    return data ? this.map(data as InscripcionRow) : null;
+  }
+
   async actualizarComoEstudiante(
     id: string,
     datos: {
@@ -186,6 +202,7 @@ export class RepositorioInscripcionesSupabase implements RepositorioInscripcione
   private map(row: InscripcionRow): Inscripcion {
     return {
       id: row.id,
+      entradaToken: row.entrada_token,
       nombreCompleto: row.nombre_completo,
       ci: row.ci,
       whatsapp: row.whatsapp,

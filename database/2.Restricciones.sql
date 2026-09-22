@@ -28,6 +28,7 @@ alter table public.inscripciones
 -- restricciones: DEFAULT
 alter table public.inscripciones
   alter column id set default gen_random_uuid(),
+  alter column entrada_token set default gen_random_uuid(),
   alter column estado set default 'pendiente_pago',
   alter column lleva_laptop set default false,
   alter column creado_en set default now(),
@@ -35,7 +36,8 @@ alter table public.inscripciones
 
 -- restricciones: UNIQUE
 alter table public.inscripciones
-  add constraint inscripciones_ci_uq unique (ci);
+  add constraint inscripciones_ci_uq unique (ci),
+  add constraint inscripciones_entrada_token_uq unique (entrada_token);
 
 -- restricciones: INDEXES
 create unique index inscripciones_registro_estudiante_unico

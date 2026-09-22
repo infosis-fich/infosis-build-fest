@@ -8,6 +8,7 @@ import {
   respuestaJson,
 } from "../../compartido/http/respuestaApi";
 import { esquemaCrearPago, esquemaWebhook } from "./esquemas";
+import type { RepositorioInscripciones } from "../dominio/inscripciones/RepositorioInscripciones";
 
 export class ControladorPagos {
   constructor(
@@ -15,6 +16,7 @@ export class ControladorPagos {
     private readonly consultarPago: ConsultarPago,
     private readonly procesarWebhook: ProcesarWebhookPago,
     private readonly validadorAutenticacion: ValidadorAutenticacionBasica,
+    private readonly repositorioInscripciones: RepositorioInscripciones,
   ) {}
 
   async crear(peticion: Request): Promise<Response> {
@@ -47,12 +49,19 @@ export class ControladorPagos {
           400,
         );
       const pago = await this.consultarPago.ejecutar(idPago);
+      const inscripcion = await this.repositorioInscripciones.buscarPorId(
+        pago.inscripcionId,
+      );
       return respuestaJson({
         pagoId: pago.id,
         estado: pago.estado,
         monto: pago.monto,
         moneda: pago.moneda,
         pagadoEn: pago.pagadoEn,
+        entradaUrl:
+          pago.estado === "pagado" && inscripcion
+            ? `/entrada/${inscripcion.entradaToken}`
+            : null,
       });
     } catch (error) {
       return manejarError(error);
