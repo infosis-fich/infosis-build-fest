@@ -41,11 +41,7 @@ export function crearControladores() {
     repositorioPagos,
     repositorioInscripciones,
   );
-  const consultarPago = new ConsultarPago(
-    pasarelaPagos,
-    repositorioPagos,
-    repositorioInscripciones,
-  );
+  const consultarPago = new ConsultarPago(repositorioPagos);
   const procesarWebhook = new ProcesarWebhookPago(
     repositorioPagos,
     repositorioInscripciones,

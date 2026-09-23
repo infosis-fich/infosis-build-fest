@@ -329,8 +329,16 @@ import EntradaDigital from "./EntradaDigital.astro";
       "[data-mensaje-pago]",
     );
     let temporizadorConsulta: number | undefined;
+    let intentosConsulta = 0;
     let tipoConfirmacion: "nuevo" | "existente" | "pagado" = "nuevo";
     let confetiCreado = false;
+
+    const detenerConsulta = () => {
+      if (temporizadorConsulta !== undefined) {
+        window.clearInterval(temporizadorConsulta);
+        temporizadorConsulta = undefined;
+      }
+    };
 
     const prepararEntrada = async (entradaUrl: string | null | undefined) => {
       if (!entradaUrl || !entradaDigital || !entradaQr || !descargarEntrada)
@@ -440,6 +448,8 @@ import EntradaDigital from "./EntradaDigital.astro";
     };
 
     const reiniciar = () => {
+      detenerConsulta();
+      intentosConsulta = 0;
       formulario?.reset();
       if (registroConsulta) registroConsulta.value = "";
       if (ciConsulta) ciConsulta.value = "";
@@ -616,7 +626,7 @@ import EntradaDigital from "./EntradaDigital.astro";
       tipo: "nuevo" | "existente" | "pagado",
       entradaUrl?: string | null,
     ) => {
-      if (temporizadorConsulta) window.clearInterval(temporizadorConsulta);
+      detenerConsulta();
       crearConfeti();
       modal?.classList.add("modal-inscripcion--confirmacion");
       if (tituloConfirmacion) {
@@ -719,7 +729,16 @@ import EntradaDigital from "./EntradaDigital.astro";
         mensajePago.textContent = `Monto a pagar: ${datosPago.monto} Bs. Esperando confirmación…`;
         mensajePago.classList.add("pago-inscripcion__espera");
         mostrarPaso("pago");
+        intentosConsulta = 0;
         temporizadorConsulta = window.setInterval(async () => {
+          intentosConsulta += 1;
+          if (intentosConsulta > 60) {
+            detenerConsulta();
+            mensajePago.textContent =
+              "No pudimos confirmar el pago. Si ya realizaste el pago, vuelve a consultar más tarde.";
+            mensajePago.classList.remove("pago-inscripcion__espera");
+            return;
+          }
           const respuestaEstado = await fetch(
             `/api/pagos/estado/${datosPago.pagoId}`,
           );
@@ -743,6 +762,7 @@ import EntradaDigital from "./EntradaDigital.astro";
     modal?.addEventListener("click", (evento) => {
       if (evento.target === modal) modal.close();
     });
+    modal?.addEventListener("close", detenerConsulta);
   };
 
   if (document.readyState === "loading") {
