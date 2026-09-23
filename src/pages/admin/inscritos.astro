@@ -28,12 +28,14 @@ const recaudacion = pagados.reduce(
 function fecha(fechaIso: string) {
   return new Intl.DateTimeFormat("es-BO", {
     dateStyle: "short",
+    timeZone: "America/La_Paz",
   }).format(new Date(fechaIso));
 }
 
 function hora(fechaIso: string) {
   return new Intl.DateTimeFormat("es-BO", {
     timeStyle: "short",
+    timeZone: "America/La_Paz",
   }).format(new Date(fechaIso));
 }
 
