@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import Analytics from "@vercel/analytics/astro";
 import BackToTop from "./BackToTop.astro";
 import ModalInscripcion from "./ModalInscripcion.astro";
 import { event } from "../data/event";
@@ -49,7 +50,7 @@ const socialImage = new URL(image, Astro.url);
       type="image/png"
     /><title>
       {title}
-    </title></head
+    </title><Analytics /></head
   ><body><slot /><BackToTop />{mostrarModal && <ModalInscripcion />}</body>
 </html>
 
