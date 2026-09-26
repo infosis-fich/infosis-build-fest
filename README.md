@@ -27,6 +27,7 @@ Evento presencial de la carrera de Ingeniería Informática y Sistemas de la Fac
 - [Producción](#producción)
 - [Contenido y personalización](#contenido-y-personalización)
 - [API y persistencia](#api-y-persistencia)
+- [Licencia](#licencia)
 - [Contacto](#contacto)
 
 ## Sobre el proyecto
@@ -41,8 +42,8 @@ La interfaz pública utiliza una estética oscura, editorial y pixelada, con com
 - **Modalidad:** presencial.
 - **Lugar:** laboratorio de cómputo de la Facultad Integral del Chaco.
 - **Público:** estudiantes de la Facultad y público general.
-- **Día 1:** workshop guiado, de 09:00 a 12:00 y de 14:30 a 17:30.
-- **Día 2:** challenge de desarrollo web, de 09:00 a 15:00.
+- **Día 1:** workshop guiado, de 08:00 a 12:00 y de 14:00 a 18:00.
+- **Día 2:** challenge de desarrollo web, de 08:00 a 17:00.
 - **Inscripción:** 30 Bs para estudiantes de la Facultad y 50 Bs para público general.
 - **Beneficios:** certificado de participación y refrigerio durante el segundo día.
 - **Conocimientos previos:** no son necesarios.
@@ -228,6 +229,24 @@ Los scripts PostgreSQL de `database/` están organizados en cuatro pasos:
 Las credenciales y secretos deben configurarse mediante variables de entorno;
 no deben almacenarse en el repositorio.
 
+## Licencia
+
+El código de este proyecto se distribuye bajo la licencia [MIT](./LICENSE).
+Esta licencia permite:
+
+- Usar el código con fines personales o comerciales.
+- Copiarlo, modificarlo y adaptarlo.
+- Redistribuir el código original o sus modificaciones.
+- Integrarlo en otros proyectos.
+
+La única condición principal es conservar el aviso de copyright y el texto de
+la licencia en las copias o partes sustanciales del proyecto. El software se
+entrega sin garantías; su uso es responsabilidad de quien lo utilice.
+
+La licencia aplica al código del proyecto. Los logotipos institucionales,
+marcas, contenidos y recursos de terceros conservan sus respectivas
+condiciones de uso.
+
 ### Panel consulta
 
 El panel está disponible en `/admin/inscritos` y utiliza una sesión
@@ -289,7 +308,7 @@ Los estilos están en `src/styles/global.css` y `src/styles/enhancements.css`. L
 ## Contacto
 
 - WhatsApp: `+591 67786830`.
-- GitHub: <https://github.com/infosis-fich>.
+- Código fuente: <https://github.com/infosis-fich/infosis-build-fest>.
 - TikTok: <https://www.tiktok.com/@infosis.uagrm.fich>.
 
 <p align="right">(<a href="#readme-top">volver arriba</a>)</p>

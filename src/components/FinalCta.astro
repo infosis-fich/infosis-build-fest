@@ -1,6 +1,7 @@
 ---
 import { event } from "../data/event";
 import CursorRain from "./CursorRain.astro";
+import Countdown from "./Countdown.astro";
 ---
 
 <section class="section cta-section cta--hero" id="participa" data-reveal>
@@ -9,16 +10,11 @@ import CursorRain from "./CursorRain.astro";
       <p class="cta__eyebrow">INSCRIPCIÓN</p><h2 class="cta__title">
         {event.copy.tituloInscripcion}
       </h2><p class="cta__body">
-        {event.copy.introduccionInscripcion}
+        Da el siguiente paso y reserva tu lugar en la Build Fest.
       </p>
       <ul class="cta__benefits">
         {event.benefits.map((benefit) => <li>{benefit}</li>)}
       </ul>
-      <a
-        class="button primary"
-        href={event.urlInscripcion}
-        data-disparador-inscripcion>→ Inscribirme ahora</a
-      >
       <div class="cta-pricing" aria-label="Precios de inscripción">
         {
           event.pricing.map(([audience, price]) => (
@@ -29,6 +25,12 @@ import CursorRain from "./CursorRain.astro";
           ))
         }
       </div>
+      <Countdown />
+      <a
+        class="button primary"
+        href={event.urlInscripcion}
+        data-disparador-inscripcion>→ Inscribirme ahora</a
+      >
     </div>
   </div>
 </section>
