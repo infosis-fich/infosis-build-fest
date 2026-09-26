@@ -18,7 +18,8 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - **Día 1:** workshop guiado de desarrollo web, de 08:00 a 12:00 y de 14:00 a 18:00.
 - **Día 2:** challenge de desarrollo web, de 08:00 a 17:00.
 - **Contacto:** WhatsApp +591 67786830.
-- **GitHub:** <https://github.com/infosis-fich>.
+- **Código fuente:** <https://github.com/infosis-fich/infosis-build-fest>.
+- **Licencia del código:** MIT, con titularidad de feresdev.
 - **TikTok:** <https://www.tiktok.com/@infosis.uagrm.fich>.
 
 ## Stack utilizado
