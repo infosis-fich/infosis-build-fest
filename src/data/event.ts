@@ -34,6 +34,7 @@ export const event = {
   ],
   organizers: ["Ingeniería Informática y Sistemas"],
   contact: {
+    career: "https://infosist.org",
     whatsapp:
       "https://wa.me/59167786830?text=Hola%20Fernando%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20la%20Infosis%20Build%20Fest%202026",
     github: "https://github.com/infosis-fich/infosis-build-fest",

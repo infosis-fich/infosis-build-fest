@@ -6,21 +6,31 @@ import { event } from "../data/event";
   <div class="shell sponsors-inner">
     <h2 class="sponsors__title">Organiza</h2><ul class="sponsors__list">
       <li class="organizer">
-        <img
-          class="organizer__logo"
-          src="/ico-infosis-transparent.png"
-          alt=""
-          width="48"
-          height="48"
-        /><strong>
-          {
-            event.organizers[0]
-              .split(" y ")
-              .map((line, index) => (
-                <span>{index === 0 ? line : `y ${line}`}</span>
-              ))
-          }
-        </strong>
+        <a
+          class="organizer__link"
+          href={event.contact.career}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Visitar el sitio de ${event.organizers[0]}`}
+        >
+          <img
+            class="organizer__logo"
+            src="/ico-infosis-transparent.png"
+            alt=""
+            width="48"
+            height="48"
+          /><span class="organizer__content"
+            ><strong>
+              {
+                event.organizers[0]
+                  .split(" y ")
+                  .map((line, index) => (
+                    <span>{index === 0 ? line : `y ${line}`}</span>
+                  ))
+              }
+            </strong><small>Sitio de la carrera ↗</small></span
+          >
+        </a>
       </li>
     </ul>
   </div>
