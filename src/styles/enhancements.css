@@ -433,6 +433,36 @@
   outline: 2px solid var(--violet);
   outline-offset: 1px;
 }
+.campo-telefono {
+  display: flex;
+  align-items: stretch;
+}
+.campo-telefono__prefijo {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--line-strong);
+  border-right: 0;
+  padding: 0 0.7rem;
+  color: var(--text) !important;
+  background: var(--surface-hover);
+  font-size: 0.8125rem;
+}
+.bandera-bolivia {
+  display: inline-block;
+  width: 1.35rem;
+  height: 0.9rem;
+  margin-right: 0.45rem;
+  background: linear-gradient(
+    to bottom,
+    #d52b1e 0 33.33%,
+    #f9e300 33.33% 66.66%,
+    #007934 66.66% 100%
+  );
+}
+.campo-telefono input {
+  min-width: 0;
+}
 .formulario-inscripcion button[disabled] {
   cursor: wait;
   opacity: 0.6;

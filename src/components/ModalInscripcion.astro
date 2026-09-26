@@ -92,6 +92,7 @@ import EntradaDigital from "./EntradaDigital.astro";
             required
             minlength="4"
             maxlength="30"
+            inputmode="numeric"
             autocomplete="off"
           />
         </label>
@@ -127,19 +128,34 @@ import EntradaDigital from "./EntradaDigital.astro";
             required
             minlength="4"
             maxlength="30"
+            inputmode="numeric"
             autocomplete="off"
             data-ci
           />
         </label>
         <label>
           WhatsApp
-          <input
-            name="whatsapp"
-            required
-            minlength="7"
-            maxlength="30"
-            autocomplete="tel"
-          />
+          <span class="campo-telefono">
+            <span class="campo-telefono__prefijo">
+              <span
+                class="bandera-bolivia"
+                role="img"
+                aria-label="Bandera de Bolivia"></span>
+              +591
+            </span>
+            <input
+              name="whatsapp"
+              required
+              pattern="[0-9]{8}"
+              minlength="8"
+              maxlength="8"
+              inputmode="numeric"
+              autocomplete="tel-national"
+              placeholder="70000000"
+              data-whatsapp-local
+              aria-label="Número de WhatsApp sin código de país"
+            />
+          </span>
         </label>
         <label class="campo-checkbox">
           <input type="checkbox" name="llevaLaptop" value="true" />
@@ -656,7 +672,7 @@ import EntradaDigital from "./EntradaDigital.astro";
         ?.value.trim();
       if (whatsappConfirmacion) {
         whatsappConfirmacion.textContent = whatsapp
-          ? `Te enviaremos más información a tu WhatsApp: ${whatsapp}.`
+          ? `Te enviaremos más información a tu WhatsApp: +591 ${whatsapp}.`
           : "Te enviaremos más información a tu WhatsApp.";
       }
       if (vistaQr) vistaQr.hidden = true;
@@ -693,7 +709,10 @@ import EntradaDigital from "./EntradaDigital.astro";
         const respuestaInscripcion = await fetch("/api/inscripciones", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(Object.fromEntries(new FormData(formulario))),
+          body: JSON.stringify({
+            ...Object.fromEntries(new FormData(formulario)),
+            whatsapp: `+591${formulario.querySelector<HTMLInputElement>('input[name="whatsapp"]')?.value.trim() ?? ""}`,
+          }),
         });
         const inscripcion = await respuestaInscripcion.json();
         if (!respuestaInscripcion.ok)
