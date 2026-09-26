@@ -310,6 +310,15 @@ nav a:hover,
   border-color: var(--blue-hover);
   background: var(--blue-hover);
 }
+.button.primary.button--evento-cerrado,
+.button.primary.button--evento-cerrado:hover {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
 .hero__logo-map {
   position: absolute;
   top: 50%;

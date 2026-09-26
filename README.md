@@ -41,8 +41,8 @@ La interfaz pública utiliza una estética oscura, editorial y pixelada, con com
 - **Modalidad:** presencial.
 - **Lugar:** laboratorio de cómputo de la Facultad Integral del Chaco.
 - **Público:** estudiantes de la Facultad y público general.
-- **Día 1:** workshop guiado, de 09:00 a 12:00 y de 14:30 a 17:30.
-- **Día 2:** challenge de desarrollo web, de 09:00 a 15:00.
+- **Día 1:** workshop guiado, de 08:00 a 12:00 y de 14:00 a 18:00.
+- **Día 2:** challenge de desarrollo web, de 08:00 a 17:00.
 - **Inscripción:** 30 Bs para estudiantes de la Facultad y 50 Bs para público general.
 - **Beneficios:** certificado de participación y refrigerio durante el segundo día.
 - **Conocimientos previos:** no son necesarios.

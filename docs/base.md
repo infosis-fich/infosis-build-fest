@@ -15,8 +15,8 @@ La interfaz utiliza contenido real del evento y mantiene una estética oscura, e
 - **Público:** estudiantes de la Facultad y público general.
 - **Costo:** 30 Bs para estudiantes de la Facultad y 50 Bs para público general.
 - **Beneficios:** certificado de participación y refrigerio durante el segundo día.
-- **Día 1:** workshop guiado de desarrollo web, de 09:00 a 12:00 y de 14:30 a 17:30.
-- **Día 2:** challenge de desarrollo web, de 09:00 a 15:00.
+- **Día 1:** workshop guiado de desarrollo web, de 08:00 a 12:00 y de 14:00 a 18:00.
+- **Día 2:** challenge de desarrollo web, de 08:00 a 17:00.
 - **Contacto:** WhatsApp +591 67786830.
 - **GitHub:** <https://github.com/infosis-fich>.
 - **TikTok:** <https://www.tiktok.com/@infosis.uagrm.fich>.

@@ -1,0 +1,222 @@
+---
+import { event } from "../data/event";
+---
+
+<div
+  class="countdown-inline"
+  data-countdown
+  data-inicio={event.countdown.inicio}
+  data-fin={event.countdown.fin}
+  aria-label="Cuenta regresiva"
+  role="group"
+>
+  <div class="countdown-panel">
+    <p class="countdown__eyebrow" data-countdown-label>FALTAN</p>
+
+    <div class="countdown-grid" data-countdown-grid aria-live="polite">
+      <div class="countdown-unit">
+        <strong class="countdown-value" data-countdown-dias>00</strong>
+        <span>DÍAS</span>
+      </div>
+      <div class="countdown-unit">
+        <strong class="countdown-value" data-countdown-horas>00</strong>
+        <span>HRS</span>
+      </div>
+      <div class="countdown-unit">
+        <strong class="countdown-value" data-countdown-minutos>00</strong>
+        <span>MIN</span>
+      </div>
+      <div class="countdown-unit">
+        <strong class="countdown-value" data-countdown-segundos>00</strong>
+        <span>SEG</span>
+      </div>
+    </div>
+
+    <p class="countdown__status" data-countdown-status hidden></p>
+  </div>
+</div>
+
+<script>
+  const inicializarCuentaRegresiva = () => {
+    const contador = document.querySelector<HTMLElement>("[data-countdown]");
+    const cuadricula = contador?.querySelector<HTMLElement>(
+      "[data-countdown-grid]",
+    );
+    const estado = contador?.querySelector<HTMLElement>(
+      "[data-countdown-status]",
+    );
+    const etiqueta = contador?.querySelector<HTMLElement>(
+      "[data-countdown-label]",
+    );
+    const inicio = contador?.dataset.inicio
+      ? new Date(contador.dataset.inicio).getTime()
+      : NaN;
+    const fin = contador?.dataset.fin
+      ? new Date(contador.dataset.fin).getTime()
+      : NaN;
+    const valores = {
+      dias: contador?.querySelector<HTMLElement>("[data-countdown-dias]"),
+      horas: contador?.querySelector<HTMLElement>("[data-countdown-horas]"),
+      minutos: contador?.querySelector<HTMLElement>("[data-countdown-minutos]"),
+      segundos: contador?.querySelector<HTMLElement>(
+        "[data-countdown-segundos]",
+      ),
+    };
+
+    if (
+      !contador ||
+      !cuadricula ||
+      !estado ||
+      !etiqueta ||
+      !Number.isFinite(inicio) ||
+      !Number.isFinite(fin)
+    ) {
+      return;
+    }
+
+    const completar = (valor: number) => String(valor).padStart(2, "0");
+    let temporizador: number | undefined;
+
+    const actualizarValor = (
+      elemento: HTMLElement | null | undefined,
+      valor: string,
+    ) => {
+      if (!elemento || elemento.textContent === valor) return;
+      elemento.textContent = valor;
+      elemento.classList.remove("countdown-value--changing");
+      void elemento.offsetWidth;
+      elemento.classList.add("countdown-value--changing");
+    };
+
+    const actualizar = () => {
+      const ahora = Date.now();
+      const restante = inicio - ahora;
+      if (restante > 0) {
+        const totalSegundos = Math.floor(restante / 1000);
+        const dias = Math.floor(totalSegundos / 86400);
+        const horas = Math.floor((totalSegundos % 86400) / 3600);
+        const minutos = Math.floor((totalSegundos % 3600) / 60);
+        const segundos = totalSegundos % 60;
+        actualizarValor(valores.dias, completar(dias));
+        actualizarValor(valores.horas, completar(horas));
+        actualizarValor(valores.minutos, completar(minutos));
+        actualizarValor(valores.segundos, completar(segundos));
+        return;
+      }
+
+      cuadricula.hidden = true;
+      etiqueta.hidden = true;
+      estado.hidden = false;
+      estado.textContent =
+        ahora <= fin ? "EL EVENTO ESTÁ EN CURSO" : "GRACIAS POR SER PARTE";
+      if (temporizador !== undefined) window.clearInterval(temporizador);
+    };
+
+    actualizar();
+    temporizador = window.setInterval(actualizar, 1000);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializarCuentaRegresiva, {
+      once: true,
+    });
+  } else {
+    inicializarCuentaRegresiva();
+  }
+</script>
+
+<style>
+  .countdown-inline {
+    width: fit-content;
+    max-width: 100%;
+    margin: 1.25rem auto 1.5rem;
+    text-align: center;
+  }
+  .countdown-panel {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.65rem;
+  }
+  .countdown__eyebrow {
+    margin: 0;
+    color: var(--violet);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+  .countdown-grid {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: clamp(0.65rem, 2vw, 1.25rem);
+    margin: 0;
+  }
+  .countdown-grid[hidden],
+  .countdown__eyebrow[hidden] {
+    display: none !important;
+  }
+  .countdown-unit {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .countdown-unit:not(:last-child)::after {
+    position: absolute;
+    top: 50%;
+    right: -0.75rem;
+    color: var(--violet);
+    content: "·";
+    font-size: 1rem;
+    transform: translateY(-50%);
+  }
+  .countdown-unit strong {
+    display: inline-block;
+    min-width: 2ch;
+    color: var(--text);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+  .countdown-value--changing {
+    animation: countdown-slide 0.35s var(--ease) both;
+  }
+  .countdown-unit span {
+    color: var(--muted);
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+  }
+  .countdown__status {
+    margin: 0;
+    color: var(--text);
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    .countdown-unit {
+      justify-content: flex-start;
+    }
+    .countdown-panel {
+      flex-wrap: wrap;
+    }
+  }
+  @keyframes countdown-slide {
+    from {
+      opacity: 0;
+      transform: translateY(60%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .countdown-value--changing {
+      animation: none;
+    }
+  }
+</style>

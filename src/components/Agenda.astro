@@ -11,7 +11,12 @@ import { event } from "../data/event";
     </div><div class="agenda">
       {
         event.agenda.map((day) => (
-          <article class="card agenda-day">
+          <article
+            class="card agenda-day"
+            data-agenda-day
+            data-fecha={day.date}
+            data-fin={day.end}
+          >
             <>
               <canvas
                 class="card__pixels"
@@ -26,7 +31,7 @@ import { event } from "../data/event";
               </header>
               <div class="agenda-list">
                 {day.items.map(([time, activity]) => (
-                  <div>
+                  <div data-agenda-item data-hora={time}>
                     <strong>{time}</strong>
                     <span>{activity}</span>
                   </div>
@@ -39,3 +44,45 @@ import { event } from "../data/event";
     </div>
   </div>
 </section>
+
+<script>
+  const inicializarAgenda = () => {
+    const dias = document.querySelectorAll<HTMLElement>("[data-agenda-day]");
+    const ahora = Date.now();
+
+    dias.forEach((dia) => {
+      const fecha = dia.dataset.fecha;
+      if (!fecha) return;
+      const finDia = dia.dataset.fin
+        ? new Date(`${fecha}T${dia.dataset.fin}:00-04:00`).getTime()
+        : new Date(`${fecha}T23:59:59-04:00`).getTime();
+      const actividades = Array.from(
+        dia.querySelectorAll<HTMLElement>("[data-agenda-item]"),
+      );
+
+      actividades.forEach((actividad, indice) => {
+        const hora = actividad.dataset.hora;
+        if (!hora) return;
+        const inicio = new Date(`${fecha}T${hora}:00-04:00`).getTime();
+        const siguienteHora = actividades[indice + 1]?.dataset.hora;
+        const fin = siguienteHora
+          ? new Date(`${fecha}T${siguienteHora}:00-04:00`).getTime()
+          : finDia;
+        const esActual = ahora >= inicio && ahora < fin;
+        const esCompletada = ahora >= fin;
+
+        actividad.classList.toggle("is-current", esActual);
+        actividad.classList.toggle("is-complete", esCompletada);
+        if (esActual) actividad.setAttribute("aria-current", "time");
+      });
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializarAgenda, {
+      once: true,
+    });
+  } else {
+    inicializarAgenda();
+  }
+</script>
