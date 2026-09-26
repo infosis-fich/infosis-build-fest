@@ -372,6 +372,22 @@ nav a:hover,
   align-items: center;
   gap: 1rem;
 }
+.organizer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+.organizer__link:hover .organizer__logo,
+.organizer__link:focus-visible .organizer__logo {
+  opacity: 1;
+}
+.organizer__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
 .organizer__logo {
   display: block;
   width: 3rem;
@@ -390,6 +406,11 @@ nav a:hover,
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.35;
+}
+.organizer small {
+  color: var(--violet);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
 }
 .footer {
   display: flex;
@@ -455,6 +476,10 @@ nav a:hover,
   width: 0.85rem;
   height: 0.85rem;
   fill: currentColor;
+}
+.footer-link__external svg {
+  fill: none;
+  stroke: currentColor;
 }
 
 @media (max-width: 1100px) {
