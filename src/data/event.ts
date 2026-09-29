@@ -5,6 +5,7 @@ export const event = {
     inicio: "2026-09-30T08:00:00-04:00",
     fin: "2026-10-01T17:00:00-04:00",
   },
+  inscripcionesHasta: "2026-09-29T17:00:00-04:00",
   mode: "Presencial",
   description:
     "Una experiencia intensiva de desarrollo web para estudiantes de la Facultad y público general. No necesitas conocimientos previos: construye, aprende y compite usando agentes de IA.",

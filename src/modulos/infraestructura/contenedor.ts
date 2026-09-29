@@ -67,6 +67,7 @@ export function crearControladores() {
         entorno.contrasenaVeripagos,
       ),
       repositorioInscripciones,
+      repositorioPagos,
     ),
   };
 }

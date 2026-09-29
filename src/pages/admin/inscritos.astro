@@ -10,7 +10,51 @@ if (!sesionAdministrativaValida(Astro.request)) {
   return Astro.redirect("/admin/login", 303);
 }
 
-const inscritos = await crearControladores().inscripciones.listar();
+const controladores = crearControladores();
+const [inscritos, pagos] = await Promise.all([
+  controladores.inscripciones.listar(),
+  controladores.pagos.listar(),
+]);
+const pagosPorInscripcion = new Map();
+for (const pago of pagos) {
+  if (!pagosPorInscripcion.has(pago.inscripcionId)) {
+    pagosPorInscripcion.set(pago.inscripcionId, pago);
+  }
+}
+const estadosPago = [
+  "todos",
+  "pagado",
+  "pendiente",
+  "fallido",
+  "cancelado",
+  "sin_pago",
+] as const;
+type FiltroEstadoPago = (typeof estadosPago)[number];
+const filtroSolicitado = Astro.url.searchParams.get("estadoPago");
+const filtroEstado: FiltroEstadoPago = estadosPago.includes(
+  filtroSolicitado as FiltroEstadoPago,
+)
+  ? (filtroSolicitado as FiltroEstadoPago)
+  : "todos";
+const inscritosOrdenados = [...inscritos].sort((a, b) => {
+  const pagoA = pagosPorInscripcion.get(a.id);
+  const pagoB = pagosPorInscripcion.get(b.id);
+  const fechaA = pagoA?.pagadoEn
+    ? new Date(pagoA.pagadoEn).getTime()
+    : Number.NEGATIVE_INFINITY;
+  const fechaB = pagoB?.pagadoEn
+    ? new Date(pagoB.pagadoEn).getTime()
+    : Number.NEGATIVE_INFINITY;
+  return fechaB - fechaA ||
+    new Date(b.creadoEn).getTime() - new Date(a.creadoEn).getTime();
+});
+const inscritosVisibles = inscritosOrdenados.filter((inscrito) => {
+  if (filtroEstado === "todos") return true;
+  if (filtroEstado === "sin_pago") {
+    return !pagosPorInscripcion.has(inscrito.id);
+  }
+  return pagosPorInscripcion.get(inscrito.id)?.estado === filtroEstado;
+});
 const pagados = inscritos.filter((inscrito) => inscrito.estado === "pagada");
 const pendientes = inscritos.filter(
   (inscrito) => inscrito.estado === "pendiente_pago",
@@ -51,12 +95,10 @@ function enlaceWhatsApp(numero: string) {
   return `https://wa.me/${numeroInternacional}`;
 }
 
-function estado(estadoInscripcion: string) {
-  return estadoInscripcion === "pagada"
-    ? "Pagada"
-    : estadoInscripcion === "cancelada"
-      ? "Cancelada"
-      : "Pendiente";
+function estadoPago(inscripcionId: string) {
+  const pago = pagosPorInscripcion.get(inscripcionId);
+  if (!pago) return "Sin pago";
+  return pago.estado.charAt(0).toUpperCase() + pago.estado.slice(1);
 }
 ---
 
@@ -100,10 +142,37 @@ function estado(estadoInscripcion: string) {
           <div>
             <h2 id="listado-title">Lista completa</h2>
           </div>
+          <form class="filter-form" method="get">
+            <label for="estado-pago">Estado de pago</label>
+            <div class="select-control">
+              <select
+                id="estado-pago"
+                name="estadoPago"
+                onchange="this.form.submit()"
+              >
+                {
+                  estadosPago.map((estadoOpcion) => (
+                    <option
+                      value={estadoOpcion}
+                      selected={filtroEstado === estadoOpcion}
+                    >
+                      {estadoOpcion === "todos"
+                        ? "Todos los estados"
+                        : estadoOpcion === "sin_pago"
+                          ? "Sin pago"
+                          : estadoOpcion.charAt(0).toUpperCase() +
+                            estadoOpcion.slice(1)}
+                    </option>
+                  ))
+                }
+              </select>
+              <span class="select-control__arrow" aria-hidden="true">⌄</span>
+            </div>
+          </form>
         </div>
 
         {
-          inscritos.length === 0 ? (
+          inscritosVisibles.length === 0 ? (
             <p class="empty-state">Todavía no hay inscritos registrados.</p>
           ) : (
             <div class="table-scroll">
@@ -116,68 +185,79 @@ function estado(estadoInscripcion: string) {
                     <th>Código</th>
                     <th>Registro</th>
                     <th>Laptop</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
+                    <th>Estado de pago</th>
+                    <th>Pago completado</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {inscritos.map((inscrito) => (
-                    <tr>
-                      <td data-label="Participante">
-                        <strong>{inscrito.nombreCompleto}</strong>
-                      </td>
-                      <td data-label="CI">{inscrito.ci}</td>
-                      <td data-label="WhatsApp">
-                        <a
-                          class="whatsapp-link"
-                          href={enlaceWhatsApp(inscrito.whatsapp)}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={`Abrir WhatsApp de ${inscrito.nombreCompleto}`}
-                        >
-                          <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d={siWhatsapp.path} />
-                          </svg>
-                          <span>{inscrito.whatsapp}</span>
-                        </a>
-                      </td>
-                      <td data-label="Código">
-                        <span
-                          title={
-                            inscrito.tipoParticipante === "estudiante"
-                              ? "Estudiante"
-                              : "General"
-                          }
-                        >
-                          {tipo(inscrito.tipoParticipante)}
-                        </span>
-                      </td>
-                      <td data-label="Registro">
-                        {inscrito.registroEstudiante ?? "—"}
-                      </td>
-                      <td data-label="Laptop">
-                        {inscrito.llevaLaptop ? "Sí" : "No"}
-                      </td>
-                      <td data-label="Estado">
-                        <span
-                          class:list={{
-                            badge: true,
-                            paid: inscrito.estado === "pagada",
-                            pending: inscrito.estado === "pendiente_pago",
-                            cancelled: inscrito.estado === "cancelada",
-                          }}
-                        >
-                          {estado(inscrito.estado)}
-                        </span>
-                      </td>
-                      <td data-label="Fecha">
-                        <div class="fecha-dato">
-                          <span>{fecha(inscrito.creadoEn)}</span>
-                          <small>{hora(inscrito.creadoEn)}</small>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                  {inscritosVisibles.map((inscrito) => {
+                    const pago = pagosPorInscripcion.get(inscrito.id);
+                    return (
+                      <tr>
+                        <td data-label="Participante">
+                          <strong>{inscrito.nombreCompleto}</strong>
+                        </td>
+                        <td data-label="CI">{inscrito.ci}</td>
+                        <td data-label="WhatsApp">
+                          <a
+                            class="whatsapp-link"
+                            href={enlaceWhatsApp(inscrito.whatsapp)}
+                            target="_blank"
+                            rel="noreferrer"
+                            aria-label={`Abrir WhatsApp de ${inscrito.nombreCompleto}`}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path d={siWhatsapp.path} />
+                            </svg>
+                            <span>{inscrito.whatsapp}</span>
+                          </a>
+                        </td>
+                        <td data-label="Código">
+                          <span
+                            title={
+                              inscrito.tipoParticipante === "estudiante"
+                                ? "Estudiante"
+                                : "General"
+                            }
+                          >
+                            {tipo(inscrito.tipoParticipante)}
+                          </span>
+                        </td>
+                        <td data-label="Registro">
+                          {inscrito.registroEstudiante ?? "—"}
+                        </td>
+                        <td data-label="Laptop">
+                          {inscrito.llevaLaptop ? "Sí" : "No"}
+                        </td>
+                        <td data-label="Estado de pago">
+                          <span
+                            class:list={{
+                              badge: true,
+                              paid: pago?.estado === "pagado",
+                              pending: pago?.estado === "pendiente",
+                              cancelled:
+                                pago?.estado === "cancelado" ||
+                                pago?.estado === "fallido",
+                            }}
+                          >
+                            {estadoPago(inscrito.id)}
+                          </span>
+                        </td>
+                        <td data-label="Pago completado">
+                          <div class="fecha-dato">
+                            {pago?.pagadoEn ? (
+                              <>
+                                <span>{fecha(pago.pagadoEn)}</span>
+                                <small>{hora(pago.pagadoEn)}</small>
+                              </>
+                            ) : (
+                              <span>—</span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -273,6 +353,59 @@ function estado(estadoInscripcion: string) {
     gap: 1rem;
     padding: 1.5rem;
     border-bottom: 1px solid var(--line);
+  }
+  .filter-form {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .filter-form label {
+    color: var(--muted);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .select-control {
+    position: relative;
+    min-width: 12rem;
+  }
+  .filter-form select {
+    width: 100%;
+    appearance: none;
+    padding: 0.7rem 2.25rem 0.7rem 0.85rem;
+    border: 1px solid #8fd0e94d;
+    border-radius: 0.2rem;
+    outline: none;
+    color: var(--text);
+    background: linear-gradient(135deg, #ffffff0d, #147db51a), #101a22;
+    color-scheme: dark;
+    font: inherit;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition:
+      border-color 0.18s ease-out,
+      background 0.18s ease-out,
+      box-shadow 0.18s ease-out;
+  }
+  .filter-form select:hover,
+  .filter-form select:focus {
+    border-color: var(--violet);
+    background: linear-gradient(135deg, #ffffff14, #147db526), #101a22;
+    box-shadow: 0 0 0 3px #8fd0e91c;
+  }
+  .filter-form option {
+    color: var(--text);
+    background-color: #101a22;
+  }
+  .select-control__arrow {
+    position: absolute;
+    top: 50%;
+    right: 0.8rem;
+    color: var(--violet);
+    font-size: 1rem;
+    line-height: 1;
+    pointer-events: none;
+    transform: translateY(-58%);
   }
   .table-scroll {
     overflow-x: auto;
@@ -473,6 +606,17 @@ function estado(estadoInscripcion: string) {
       align-items: start;
       flex-direction: column;
       padding: 1rem;
+    }
+    .filter-form {
+      align-items: stretch;
+      flex-direction: column;
+      width: 100%;
+    }
+    .filter-form select {
+      width: 100%;
+    }
+    .select-control {
+      width: 100%;
     }
     td[data-label="Participante"] strong {
       display: block;

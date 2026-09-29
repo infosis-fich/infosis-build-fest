@@ -9,6 +9,7 @@ import {
 } from "../../compartido/http/respuestaApi";
 import { esquemaCrearPago, esquemaWebhook } from "./esquemas";
 import type { RepositorioInscripciones } from "../dominio/inscripciones/RepositorioInscripciones";
+import type { RepositorioPagos } from "../dominio/pagos/RepositorioPagos";
 
 export class ControladorPagos {
   constructor(
@@ -17,7 +18,12 @@ export class ControladorPagos {
     private readonly procesarWebhook: ProcesarWebhookPago,
     private readonly validadorAutenticacion: ValidadorAutenticacionBasica,
     private readonly repositorioInscripciones: RepositorioInscripciones,
+    private readonly repositorioPagos: RepositorioPagos,
   ) {}
+
+  async listar() {
+    return this.repositorioPagos.listarTodos();
+  }
 
   async crear(peticion: Request): Promise<Response> {
     try {

@@ -11,4 +11,5 @@ export interface Pago {
   estado: EstadoPago;
   datosConfirmacion: DatosConfirmacionPago | null;
   pagadoEn: string | null;
+  creadoEn: string;
 }

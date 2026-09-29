@@ -9,6 +9,7 @@ import { TokenVerificacionEstudiante } from "../aplicacion/estudiantes/TokenVeri
 import { ErrorAplicacion } from "../aplicacion/ErrorAplicacion";
 import type { RepositorioInscripciones } from "../dominio/inscripciones/RepositorioInscripciones";
 import type { Inscripcion } from "../dominio/inscripciones/Inscripcion";
+import { event } from "../../data/event";
 
 export class ControladorInscripciones {
   constructor(
@@ -50,6 +51,12 @@ export class ControladorInscripciones {
 
   async crear(peticion: Request): Promise<Response> {
     try {
+      if (Date.now() >= new Date(event.inscripcionesHasta).getTime()) {
+        throw new ErrorAplicacion(
+          "INSCRIPCIONES_CERRADAS",
+          "Las inscripciones ya están cerradas.",
+        );
+      }
       const cuerpo = await peticion.json();
       const entrada = esquemaInscripcion.parse({
         ...cuerpo,

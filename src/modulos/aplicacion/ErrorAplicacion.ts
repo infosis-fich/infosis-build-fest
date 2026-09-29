@@ -4,6 +4,7 @@ export type CodigoErrorAplicacion =
   | "CONFLICTO"
   | "ERROR_PAGO"
   | "ERROR_ESTUDIANTE"
+  | "INSCRIPCIONES_CERRADAS"
   | "SERVICIO_NO_DISPONIBLE"
   | "ERROR_INTERNO";
 

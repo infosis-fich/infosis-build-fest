@@ -16,9 +16,26 @@ interface PagoRow {
   estado: EstadoPago;
   datos_confirmacion: Record<string, unknown> | null;
   pagado_en: string | null;
+  creado_en: string;
 }
 
 export class RepositorioPagosSupabase implements RepositorioPagos {
+  async listarTodos(): Promise<Pago[]> {
+    const { data, error } = await crearClienteSupabase()
+      .from("pagos")
+      .select()
+      .order("creado_en", { ascending: false });
+
+    if (error)
+      throw new ErrorAplicacion(
+        "ERROR_INTERNO",
+        "No se pudieron consultar los pagos.",
+        error,
+      );
+
+    return (data as PagoRow[]).map((row) => this.map(row));
+  }
+
   async crear(entrada: RegistroCrearPago): Promise<Pago> {
     const { data, error } = await crearClienteSupabase()
       .from("pagos")
@@ -128,6 +145,7 @@ export class RepositorioPagosSupabase implements RepositorioPagos {
       estado: row.estado,
       datosConfirmacion: row.datos_confirmacion,
       pagadoEn: row.pagado_en,
+      creadoEn: row.creado_en,
     };
   }
 }

@@ -11,6 +11,7 @@ export interface RegistroCrearPago {
 }
 
 export interface RepositorioPagos {
+  listarTodos(): Promise<Pago[]>;
   crear(entrada: RegistroCrearPago): Promise<Pago>;
   buscarPorId(id: string): Promise<Pago | null>;
   buscarPorInscripcionId(inscripcionId: string): Promise<Pago | null>;
