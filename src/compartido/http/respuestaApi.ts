@@ -15,6 +15,7 @@ export function manejarError(error: unknown): Response {
       CONFLICTO: 409,
       ERROR_PAGO: 502,
       ERROR_ESTUDIANTE: 422,
+      INSCRIPCIONES_CERRADAS: 410,
       SERVICIO_NO_DISPONIBLE: 503,
       ERROR_INTERNO: 500,
     } as const;

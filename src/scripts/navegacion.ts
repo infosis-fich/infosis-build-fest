@@ -4,17 +4,28 @@ type VentanaConEstado = Window & {
   [CLAVE_INICIALIZACION]?: boolean;
 };
 
-type EstadoInscripcion = "disponible" | "en_curso" | "finalizado";
+type EstadoInscripcion =
+  | "antes_del_evento"
+  | "inscripciones_cerradas"
+  | "en_curso"
+  | "finalizado";
 
 function obtenerEstadoInscripcion(): EstadoInscripcion | null {
   const contador = document.querySelector<HTMLElement>("[data-countdown]");
-  if (!contador?.dataset.inicio || !contador.dataset.fin) return null;
+  if (
+    !contador?.dataset.inicio ||
+    !contador.dataset.fin ||
+    !contador.dataset.cierreInscripciones
+  )
+    return null;
 
   const ahora = Date.now();
   const inicio = new Date(contador.dataset.inicio).getTime();
   const fin = new Date(contador.dataset.fin).getTime();
+  const cierre = new Date(contador.dataset.cierreInscripciones).getTime();
 
-  if (ahora < inicio) return "disponible";
+  if (ahora >= cierre && ahora < inicio) return "inscripciones_cerradas";
+  if (ahora < inicio) return "antes_del_evento";
   if (ahora <= fin) return "en_curso";
   return "finalizado";
 }
@@ -30,10 +41,14 @@ function actualizarDisparadoresInscripcion() {
         disparador.dataset.textoOriginal ?? disparador.textContent ?? "";
       disparador.dataset.textoOriginal = textoOriginal;
       disparador.dataset.estadoInscripcion = estado;
-      if (estado === "disponible") {
-        disparador.textContent = textoOriginal;
+      if (estado === "antes_del_evento") {
+        disparador.textContent = "→ Antes del evento";
         disparador.removeAttribute("aria-disabled");
         disparador.classList.remove("button--evento-cerrado");
+      } else if (estado === "inscripciones_cerradas") {
+        disparador.textContent = "→ Inscripciones cerradas";
+        disparador.setAttribute("aria-disabled", "true");
+        disparador.classList.add("button--evento-cerrado");
       } else if (estado === "en_curso") {
         disparador.textContent = "→ Evento en curso";
         disparador.setAttribute("aria-disabled", "true");
@@ -72,7 +87,7 @@ export function initNavegacionGlobal() {
     );
     if (disparador) {
       event.preventDefault();
-      if (disparador.dataset.estadoInscripcion !== "disponible") return;
+      if (disparador.dataset.estadoInscripcion !== "antes_del_evento") return;
       window.dispatchEvent(new CustomEvent("abrir-inscripcion"));
       return;
     }
